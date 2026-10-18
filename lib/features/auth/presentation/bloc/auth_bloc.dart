@@ -7,6 +7,8 @@ import '../../domain/usecases/logout_use_case.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
+import 'package:dio/dio.dart';
+
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required this._loginUseCase,
@@ -50,9 +52,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       debugPrint('AuthBloc login failed: $error');
       debugPrintStack(stackTrace: stackTrace);
 
+      if (error is DioException && error.response?.statusCode == 400) {
+        emit(
+          const AuthFailure('Invalid username or password. Please try again.'),
+        );
+        return;
+      }
+
       emit(
         const AuthFailure(
-          'Login failed. Please check your credentials and try again.',
+          'Unable to log in. Please check your connection and try again.',
         ),
       );
     }

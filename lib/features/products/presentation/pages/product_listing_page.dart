@@ -12,6 +12,8 @@ import 'package:go_router/go_router.dart';
 import '../../../cart/presentation/bloc/cart_bloc.dart';
 import '../../../cart/presentation/bloc/cart_state.dart';
 
+import 'package:shimmer/shimmer.dart';
+
 class ProductListingPage extends StatelessWidget {
   const ProductListingPage({super.key});
 
@@ -338,7 +340,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
               builder: (context, state) {
                 if (state.status == ProductStatus.loading &&
                     state.products.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const _ProductGridSkeleton();
                 }
 
                 if (state.status == ProductStatus.failure &&
@@ -359,10 +361,15 @@ class _ProductListingViewState extends State<_ProductListingView> {
 
                 return RefreshIndicator(
                   onRefresh: () async {
-                    context.read<ProductBloc>().add(const ProductsRefreshed());
-                    await Future<void>.delayed(
-                      const Duration(milliseconds: 500),
+                    final bloc = context.read<ProductBloc>();
+
+                    final refreshCompleted = bloc.stream.firstWhere(
+                      (state) => state.status != ProductStatus.loading,
                     );
+
+                    bloc.add(const ProductsRefreshed());
+
+                    await refreshCompleted;
                   },
                   child: Column(
                     children: [
@@ -486,13 +493,64 @@ class _ProductCard extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                    Text(
-                      '\$${product.price.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        color: Color(0xFF5035FF),
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                      ),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                '\$${(product.price * (1 - product.discountPercentage / 100)).toStringAsFixed(2)}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Color(0xFF5035FF),
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            if (product.discountPercentage > 0) ...[
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  '\$${product.price.toStringAsFixed(2)}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 11,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        if (product.discountPercentage > 0) ...[
+                          const SizedBox(height: 2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE7F7EC),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '${product.discountPercentage.toStringAsFixed(0)}% OFF',
+                              style: const TextStyle(
+                                color: Color(0xFF18743A),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),
@@ -878,6 +936,71 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       onSelected: (_) {
         setState(() => _selectedRating = rating);
+      },
+    );
+  }
+}
+
+class _ProductGridSkeleton extends StatelessWidget {
+  const _ProductGridSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final columns = width < 600
+            ? 2
+            : width < 1024
+            ? 3
+            : 4;
+
+        return GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          itemCount: columns * 3,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: width < 600 ? 0.62 : 0.78,
+          ),
+          itemBuilder: (context, index) {
+            return Shimmer.fromColors(
+              baseColor: Colors.grey.shade200,
+              highlightColor: Colors.grey.shade50,
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        height: 12,
+                        width: double.infinity,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 8),
+                      Container(height: 12, width: 70, color: Colors.white),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
       },
     );
   }

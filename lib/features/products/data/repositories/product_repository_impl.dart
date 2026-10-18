@@ -7,6 +7,8 @@ import '../../domain/entities/product_category.dart';
 import '../../domain/repositories/product_repository.dart';
 import '../datasources/product_remote_data_source.dart';
 
+import 'package:flutter/foundation.dart';
+
 class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl({required this._remoteDataSource});
 
@@ -20,9 +22,17 @@ class ProductRepositoryImpl implements ProductRepository {
     try {
       return await _remoteDataSource.getProducts(limit: limit, skip: skip);
     } on DioException catch (error) {
+      if (kDebugMode) {
+        debugPrint('PRODUCT API ERROR TYPE: ${error.type}');
+        debugPrint('PRODUCT API ERROR MESSAGE: ${error.message}');
+        debugPrint('PRODUCT API ERROR DETAILS: ${error.error}');
+        debugPrint('PRODUCT API REQUEST URL: ${error.requestOptions.uri}');
+        debugPrint(
+          'PRODUCT API RESPONSE STATUS: ${error.response?.statusCode}',
+        );
+      }
+
       throw ExceptionMapper.fromDioException(error);
-    } on FormatException {
-      throw const ParsingFailure('Unable to process the products response.');
     }
   }
 

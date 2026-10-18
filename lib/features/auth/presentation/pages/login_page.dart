@@ -400,9 +400,16 @@ class _LoginPageState extends State<LoginPage> {
         icon: Icons.person_outline_rounded,
       ),
       validator: (value) {
-        if (value == null || value.trim().isEmpty) {
+        final username = value?.trim() ?? '';
+
+        if (username.isEmpty) {
           return 'Please enter your username';
         }
+
+        if (username.length < 3) {
+          return 'Username must be at least 3 characters';
+        }
+
         return null;
       },
     );
@@ -447,6 +454,11 @@ class _LoginPageState extends State<LoginPage> {
         if (value == null || value.isEmpty) {
           return 'Please enter your password';
         }
+
+        if (value.length < 6) {
+          return 'Password must be at least 6 characters';
+        }
+
         return null;
       },
     );
