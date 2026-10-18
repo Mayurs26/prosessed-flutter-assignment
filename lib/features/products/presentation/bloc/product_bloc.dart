@@ -1,15 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../domain/entities/product.dart';
-import '../../domain/usecases/get_products_use_case.dart';
 import '../../domain/usecases/get_product_categories_use_case.dart';
 import '../../domain/usecases/get_products_by_category_use_case.dart';
+import '../../domain/usecases/get_products_use_case.dart';
 import '../../domain/usecases/search_products_use_case.dart';
 import 'product_event.dart';
 import 'product_state.dart';
-
-import 'package:flutter/foundation.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc({
@@ -21,8 +20,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductsRequested>(_onProductsRequested);
     on<ProductsRefreshed>(_onProductsRefreshed);
     on<MoreProductsRequested>(_onMoreProductsRequested);
+
+    // Retained for compatibility with existing events.
     on<NextProductsPageRequested>(_onNextPageRequested);
     on<PreviousProductsPageRequested>(_onPreviousPageRequested);
+
     on<ProductCategoriesRequested>(_onProductCategoriesRequested);
     on<ProductCategorySelected>(_onProductCategorySelected);
 
@@ -31,6 +33,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       transformer: (events, mapper) =>
           events.debounce(const Duration(milliseconds: 400)).switchMap(mapper),
     );
+
+    on<ProductSortChanged>(_onProductSortChanged);
+    on<ProductFiltersChanged>(_onProductFiltersChanged);
+    on<ProductFiltersCleared>(_onProductFiltersCleared);
   }
 
   final GetProductsUseCase _getProductsUseCase;
@@ -60,6 +66,36 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     return _getProductsUseCase(limit: _pageSize, skip: skip);
   }
 
+  List<Product> _applyLocalFiltersAndSort(List<Product> products) {
+    final minPrice = state.minPrice;
+    final maxPrice = state.maxPrice;
+    final minRating = state.minRating;
+
+    final filtered = products.where((product) {
+      if (minPrice != null && product.price < minPrice) return false;
+      if (maxPrice != null && product.price > maxPrice) return false;
+      if (minRating != null && product.rating < minRating) return false;
+      return true;
+    }).toList();
+
+    switch (state.sortOption) {
+      case ProductSortOption.defaultOrder:
+        break;
+      case ProductSortOption.priceLowToHigh:
+        filtered.sort((a, b) => a.price.compareTo(b.price));
+      case ProductSortOption.priceHighToLow:
+        filtered.sort((a, b) => b.price.compareTo(a.price));
+      case ProductSortOption.ratingHighToLow:
+        filtered.sort((a, b) => b.rating.compareTo(a.rating));
+      case ProductSortOption.titleAToZ:
+        filtered.sort(
+          (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+        );
+    }
+
+    return filtered;
+  }
+
   Future<void> _loadPage(
     Emitter<ProductState> emit, {
     required int page,
@@ -82,27 +118,23 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       );
 
       debugPrint(
-        'PAGE LOADED: page=$page, '
-        'products=${products.length}, '
+        'PAGE LOADED: page=$page, products=${products.length}, '
         'skip=${(page - 1) * _pageSize}',
       );
 
       emit(
         state.copyWith(
           status: ProductStatus.success,
-          products: products,
+          products: _applyLocalFiltersAndSort(products),
           currentPage: page,
           hasReachedMax: products.length < _pageSize,
           isLoadingMore: false,
           clearErrorMessage: true,
         ),
       );
-      debugPrint(
-        'STATE UPDATED: page=${state.currentPage}, '
-        'status=${state.status}, '
-        'products=${state.products.length}',
-      );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint('Product loading failed: $error\n$stackTrace');
+
       emit(
         state.copyWith(
           status: ProductStatus.failure,
@@ -119,7 +151,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Emitter<ProductState> emit,
   ) async {
     if (state.status == ProductStatus.loading) return;
-
     await _loadPage(emit, page: 1, resetOnFailure: true);
   }
 
@@ -130,23 +161,63 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     await _loadPage(emit, page: 1, resetOnFailure: true);
   }
 
+  Future<void> _onMoreProductsRequested(
+    MoreProductsRequested event,
+    Emitter<ProductState> emit,
+  ) async {
+    if (state.status != ProductStatus.success ||
+        state.isLoadingMore ||
+        state.hasReachedMax) {
+      return;
+    }
+
+    final nextPage = state.currentPage + 1;
+
+    emit(state.copyWith(isLoadingMore: true, clearErrorMessage: true));
+
+    try {
+      final newProducts = await _fetchProducts(
+        categorySlug: state.selectedCategorySlug,
+        query: state.searchQuery,
+        skip: (nextPage - 1) * _pageSize,
+      );
+
+      emit(
+        state.copyWith(
+          status: ProductStatus.success,
+          products: _applyLocalFiltersAndSort([
+            ...state.products,
+            ...newProducts,
+          ]),
+          currentPage: nextPage,
+          hasReachedMax: newProducts.length < _pageSize,
+          isLoadingMore: false,
+          clearErrorMessage: true,
+        ),
+      );
+    } catch (error, stackTrace) {
+      debugPrint('Loading more products failed: $error\n$stackTrace');
+
+      emit(
+        state.copyWith(
+          status: ProductStatus.success,
+          isLoadingMore: false,
+          errorMessage: 'Could not load more products. Please try again.',
+        ),
+      );
+    }
+  }
+
   Future<void> _onNextPageRequested(
     NextProductsPageRequested event,
     Emitter<ProductState> emit,
   ) async {
-    debugPrint(
-      'NEXT CLICK: page=${state.currentPage}, '
-      'status=${state.status}, '
-      'hasReachedMax=${state.hasReachedMax}, '
-      'products=${state.products.length}',
-    );
-
-    if (state.status != ProductStatus.success || state.hasReachedMax) {
-      debugPrint('NEXT BLOCKED');
+    if (state.status != ProductStatus.success ||
+        state.isLoadingMore ||
+        state.hasReachedMax) {
       return;
     }
 
-    debugPrint('Loading page ${state.currentPage + 1}');
     await _loadPage(emit, page: state.currentPage + 1);
   }
 
@@ -159,15 +230,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }
 
     await _loadPage(emit, page: state.currentPage - 1);
-  }
-
-  // Kept temporarily for compatibility; the listing UI should no longer
-  // dispatch this event when numbered pagination is enabled.
-  Future<void> _onMoreProductsRequested(
-    MoreProductsRequested event,
-    Emitter<ProductState> emit,
-  ) async {
-    // Intentionally empty: numbered pagination replaces infinite scrolling.
   }
 
   Future<void> _onProductCategoriesRequested(
@@ -193,7 +255,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           clearCategoryErrorMessage: true,
         ),
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint('Loading categories failed: $error\n$stackTrace');
+
       emit(
         state.copyWith(
           isLoadingCategories: false,
@@ -243,5 +307,69 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     );
 
     await _loadPage(emit, page: 1, resetOnFailure: true);
+  }
+
+  void _onProductSortChanged(
+    ProductSortChanged event,
+    Emitter<ProductState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        sortOption: event.sortOption,
+        products: _sortProducts(state.products, event.sortOption),
+      ),
+    );
+  }
+
+  List<Product> _sortProducts(
+    List<Product> products,
+    ProductSortOption option,
+  ) {
+    final sorted = List<Product>.of(products);
+
+    switch (option) {
+      case ProductSortOption.defaultOrder:
+        break;
+      case ProductSortOption.priceLowToHigh:
+        sorted.sort((a, b) => a.price.compareTo(b.price));
+      case ProductSortOption.priceHighToLow:
+        sorted.sort((a, b) => b.price.compareTo(a.price));
+      case ProductSortOption.ratingHighToLow:
+        sorted.sort((a, b) => b.rating.compareTo(a.rating));
+      case ProductSortOption.titleAToZ:
+        sorted.sort(
+          (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+        );
+    }
+
+    return sorted;
+  }
+
+  void _onProductFiltersChanged(
+    ProductFiltersChanged event,
+    Emitter<ProductState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        minPrice: event.minPrice,
+        maxPrice: event.maxPrice,
+        minRating: event.minRating,
+        products: _applyLocalFiltersAndSort(state.products),
+      ),
+    );
+  }
+
+  void _onProductFiltersCleared(
+    ProductFiltersCleared event,
+    Emitter<ProductState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        minPrice: null,
+        maxPrice: null,
+        minRating: null,
+        products: _sortProducts(state.products, state.sortOption),
+      ),
+    );
   }
 }

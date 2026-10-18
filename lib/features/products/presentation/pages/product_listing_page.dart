@@ -42,6 +42,28 @@ class _ProductListingViewState extends State<_ProductListingView> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+
+    if (position.pixels >= position.maxScrollExtent - 300) {
+      context.read<ProductBloc>().add(const MoreProductsRequested());
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+
+    _searchController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -68,7 +90,18 @@ class _ProductListingViewState extends State<_ProductListingView> {
               );
             },
           ),
-          const SizedBox(width: 8),
+          // Profile avatar
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: IconButton(
+              tooltip: 'Profile',
+              onPressed: () => context.push('/profile'),
+              icon: const CircleAvatar(
+                radius: 17,
+                child: Icon(Icons.person_outline, size: 22),
+              ),
+            ),
+          ),
         ],
       ),
       body: Column(
@@ -167,6 +200,139 @@ class _ProductListingViewState extends State<_ProductListingView> {
               );
             },
           ),
+
+          // Sorting and filtering toolbar
+          BlocBuilder<ProductBloc, ProductState>(
+            builder: (context, state) {
+              final activeFilterCount = [
+                state.minPrice != null,
+                state.maxPrice != null,
+                state.minRating != null,
+              ].where((active) => active).length;
+
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 48,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF3F1FF),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: const Color(0xFFE5E0FF)),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<ProductSortOption>(
+                            isExpanded: true,
+                            value: state.sortOption,
+                            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                            borderRadius: BorderRadius.circular(14),
+                            hint: const Text('Sort by'),
+                            items: const [
+                              DropdownMenuItem(
+                                value: ProductSortOption.defaultOrder,
+                                child: Text('Recommended'),
+                              ),
+                              DropdownMenuItem(
+                                value: ProductSortOption.priceLowToHigh,
+                                child: Text('Price: Low to High'),
+                              ),
+                              DropdownMenuItem(
+                                value: ProductSortOption.priceHighToLow,
+                                child: Text('Price: High to Low'),
+                              ),
+                              DropdownMenuItem(
+                                value: ProductSortOption.ratingHighToLow,
+                                child: Text('Top Rated'),
+                              ),
+                              DropdownMenuItem(
+                                value: ProductSortOption.titleAToZ,
+                                child: Text('Name: A to Z'),
+                              ),
+                            ],
+                            onChanged: (option) {
+                              if (option == null) return;
+
+                              context.read<ProductBloc>().add(
+                                ProductSortChanged(option),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF5035FF),
+                        side: const BorderSide(color: Color(0xFF5035FF)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final result =
+                            await showModalBottomSheet<_ProductFilterValues>(
+                              context: context,
+                              isScrollControlled: true,
+                              useSafeArea: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => _ProductFilterSheet(
+                                minPrice: state.minPrice,
+                                maxPrice: state.maxPrice,
+                                minRating: state.minRating,
+                              ),
+                            );
+
+                        if (!context.mounted || result == null) return;
+
+                        context.read<ProductBloc>().add(
+                          ProductFiltersChanged(
+                            minPrice: result.minPrice,
+                            maxPrice: result.maxPrice,
+                            minRating: result.minRating,
+                          ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.tune_rounded, size: 19),
+                          const SizedBox(width: 6),
+                          const Text('Filter'),
+                          if (activeFilterCount > 0) ...[
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF5035FF),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                '$activeFilterCount',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
           Expanded(
             child: BlocBuilder<ProductBloc, ProductState>(
               builder: (context, state) {
@@ -214,7 +380,9 @@ class _ProductListingViewState extends State<_ProductListingView> {
                               controller: _scrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
                               padding: const EdgeInsets.all(16),
-                              itemCount: products.length,
+                              itemCount:
+                                  products.length +
+                                  (state.isLoadingMore ? 1 : 0),
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: columns,
@@ -222,59 +390,21 @@ class _ProductListingViewState extends State<_ProductListingView> {
                                     mainAxisSpacing: 12,
                                     childAspectRatio: width < 600 ? 0.62 : 0.78,
                                   ),
+
                               itemBuilder: (context, index) {
+                                if (index >= products.length) {
+                                  return const Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+
                                 return _ProductCard(product: products[index]);
                               },
                             );
                           },
-                        ),
-                      ),
-
-                      // Pagination controls
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            OutlinedButton(
-                              onPressed:
-                                  state.currentPage > 1 &&
-                                      state.status != ProductStatus.loading
-                                  ? () {
-                                      context.read<ProductBloc>().add(
-                                        const PreviousProductsPageRequested(),
-                                      );
-                                      if (_scrollController.hasClients) {
-                                        _scrollController.jumpTo(0);
-                                      }
-                                    }
-                                  : null,
-                              child: const Text('Previous'),
-                            ),
-                            const SizedBox(width: 16),
-                            Text(
-                              'Page ${state.currentPage}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            OutlinedButton(
-                              onPressed:
-                                  !state.hasReachedMax &&
-                                      state.status != ProductStatus.loading
-                                  ? () {
-                                      context.read<ProductBloc>().add(
-                                        const NextProductsPageRequested(),
-                                      );
-                                      if (_scrollController.hasClients) {
-                                        _scrollController.jumpTo(0);
-                                      }
-                                    }
-                                  : null,
-                              child: const Text('Next'),
-                            ),
-                          ],
                         ),
                       ),
                     ],
@@ -401,6 +531,354 @@ class _ErrorView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ProductFilterValues {
+  const _ProductFilterValues({this.minPrice, this.maxPrice, this.minRating});
+
+  final double? minPrice;
+  final double? maxPrice;
+  final double? minRating;
+}
+
+class _ProductFilterSheet extends StatefulWidget {
+  const _ProductFilterSheet({this.minPrice, this.maxPrice, this.minRating});
+
+  final double? minPrice;
+  final double? maxPrice;
+  final double? minRating;
+
+  @override
+  State<_ProductFilterSheet> createState() => _ProductFilterSheetState();
+}
+
+class _ProductFilterSheetState extends State<_ProductFilterSheet> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController _minPriceController;
+  late final TextEditingController _maxPriceController;
+
+  double? _selectedRating;
+  String? _validationError;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _minPriceController = TextEditingController(
+      text: widget.minPrice?.toString() ?? '',
+    );
+    _maxPriceController = TextEditingController(
+      text: widget.maxPrice?.toString() ?? '',
+    );
+    _selectedRating = widget.minRating;
+  }
+
+  @override
+  void dispose() {
+    _minPriceController.dispose();
+    _maxPriceController.dispose();
+    super.dispose();
+  }
+
+  double? _parsePrice(String value) {
+    if (value.trim().isEmpty) return null;
+    return double.tryParse(value.trim());
+  }
+
+  String? _validatePrice(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final parsed = double.tryParse(value.trim());
+
+    if (parsed == null || !parsed.isFinite) {
+      return 'Enter a valid price';
+    }
+
+    if (parsed < 0) {
+      return 'Price cannot be negative';
+    }
+
+    return null;
+  }
+
+  void _applyFilters() {
+    if (!_formKey.currentState!.validate()) return;
+
+    final minPrice = _parsePrice(_minPriceController.text);
+    final maxPrice = _parsePrice(_maxPriceController.text);
+
+    if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+      setState(() {
+        _validationError = 'Minimum price cannot exceed maximum price.';
+      });
+      return;
+    }
+
+    Navigator.of(context).pop(
+      _ProductFilterValues(
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        minRating: _selectedRating,
+      ),
+    );
+  }
+
+  void _resetFilters() {
+    Navigator.of(context).pop(const _ProductFilterValues());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.88,
+      ),
+      decoration: const BoxDecoration(
+        color: Color(0xFFFEFDFF),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(20, 12, 20, 20 + bottomInset),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Container(
+                    width: 42,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD8D4E5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 22),
+
+                Row(
+                  children: [
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEDE8FF),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Icon(
+                        Icons.tune_rounded,
+                        color: Color(0xFF5035FF),
+                        size: 25,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Filters',
+                            style: TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF211B35),
+                            ),
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            'Find products that fit your needs',
+                            style: TextStyle(
+                              color: Color(0xFF777287),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Close filters',
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 26),
+
+                const Text(
+                  'Price range',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Enter your preferred minimum and maximum price.',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF777287)),
+                ),
+                const SizedBox(height: 14),
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _priceField(
+                        controller: _minPriceController,
+                        label: 'Minimum price',
+                        validator: _validatePrice,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _priceField(
+                        controller: _maxPriceController,
+                        label: 'Maximum price',
+                        validator: _validatePrice,
+                      ),
+                    ),
+                  ],
+                ),
+
+                if (_validationError != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _validationError!,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ],
+
+                const SizedBox(height: 26),
+
+                const Text(
+                  'Minimum rating',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Choose the minimum customer rating.',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF777287)),
+                ),
+                const SizedBox(height: 14),
+
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _ratingChip('Any', null),
+                    _ratingChip('3+ ★', 3.0),
+                    _ratingChip('4+ ★', 4.0),
+                    _ratingChip('4.5+ ★', 4.5),
+                  ],
+                ),
+
+                const SizedBox(height: 28),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _resetFilters,
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(0, 52),
+                          foregroundColor: const Color(0xFF5035FF),
+                          side: const BorderSide(color: Color(0xFFDCD5FF)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: const Text(
+                          'Reset all',
+                          style: TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: FilledButton.icon(
+                        onPressed: _applyFilters,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF5035FF),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(0, 52),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        icon: const Icon(Icons.check_rounded),
+                        label: const Text(
+                          'Apply filters',
+                          style: TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _priceField({
+    required TextEditingController controller,
+    required String label,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      validator: validator,
+      onChanged: (_) {
+        if (_validationError != null) {
+          setState(() => _validationError = null);
+        }
+      },
+      decoration: InputDecoration(
+        labelText: label,
+        prefixText: '\$ ',
+        filled: true,
+        fillColor: const Color(0xFFF6F4FF),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 16,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        errorMaxLines: 2,
+      ),
+    );
+  }
+
+  Widget _ratingChip(String label, double? rating) {
+    final selected = _selectedRating == rating;
+
+    return ChoiceChip(
+      label: Text(label),
+      selected: selected,
+      showCheckmark: false,
+      labelStyle: TextStyle(
+        color: selected ? Colors.white : const Color(0xFF514A66),
+        fontWeight: FontWeight.w600,
+      ),
+      selectedColor: const Color(0xFF5035FF),
+      backgroundColor: const Color(0xFFF3F1FF),
+      side: BorderSide(
+        color: selected ? const Color(0xFF5035FF) : const Color(0xFFE5E0F0),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      onSelected: (_) {
+        setState(() => _selectedRating = rating);
+      },
     );
   }
 }

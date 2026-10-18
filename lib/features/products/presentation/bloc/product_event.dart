@@ -1,5 +1,13 @@
 import 'package:equatable/equatable.dart';
 
+enum ProductSortOption {
+  defaultOrder,
+  priceLowToHigh,
+  priceHighToLow,
+  ratingHighToLow,
+  titleAToZ,
+}
+
 abstract class ProductEvent extends Equatable {
   const ProductEvent();
 
@@ -47,4 +55,28 @@ class NextProductsPageRequested extends ProductEvent {
 
 class PreviousProductsPageRequested extends ProductEvent {
   const PreviousProductsPageRequested();
+}
+
+class ProductSortChanged extends ProductEvent {
+  const ProductSortChanged(this.sortOption);
+
+  final ProductSortOption sortOption;
+
+  @override
+  List<Object?> get props => [sortOption];
+}
+
+class ProductFiltersChanged extends ProductEvent {
+  const ProductFiltersChanged({this.minPrice, this.maxPrice, this.minRating});
+
+  final double? minPrice;
+  final double? maxPrice;
+  final double? minRating;
+
+  @override
+  List<Object?> get props => [minPrice, maxPrice, minRating];
+}
+
+class ProductFiltersCleared extends ProductEvent {
+  const ProductFiltersCleared();
 }

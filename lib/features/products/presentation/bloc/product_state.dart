@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/product.dart';
 import '../../domain/entities/product_category.dart';
+import 'product_event.dart';
 
 enum ProductStatus { initial, loading, success, failure }
 
@@ -18,6 +19,10 @@ class ProductState extends Equatable {
     this.categoryErrorMessage,
     this.searchQuery = '',
     this.currentPage = 1,
+    this.sortOption = ProductSortOption.defaultOrder,
+    this.minPrice,
+    this.maxPrice,
+    this.minRating,
   });
 
   final ProductStatus status;
@@ -31,6 +36,11 @@ class ProductState extends Equatable {
   final String? categoryErrorMessage;
   final String searchQuery;
   final int currentPage;
+
+  final ProductSortOption sortOption;
+  final double? minPrice;
+  final double? maxPrice;
+  final double? minRating;
 
   static const int pageSize = 20;
 
@@ -49,6 +59,13 @@ class ProductState extends Equatable {
     bool clearCategoryErrorMessage = false,
     String? searchQuery,
     int? currentPage,
+    ProductSortOption? sortOption,
+    double? minPrice,
+    bool clearMinPrice = false,
+    double? maxPrice,
+    bool clearMaxPrice = false,
+    double? minRating,
+    bool clearMinRating = false,
   }) {
     return ProductState(
       status: status ?? this.status,
@@ -68,6 +85,10 @@ class ProductState extends Equatable {
           : categoryErrorMessage ?? this.categoryErrorMessage,
       searchQuery: searchQuery ?? this.searchQuery,
       currentPage: currentPage ?? this.currentPage,
+      sortOption: sortOption ?? this.sortOption,
+      minPrice: clearMinPrice ? null : minPrice ?? this.minPrice,
+      maxPrice: clearMaxPrice ? null : maxPrice ?? this.maxPrice,
+      minRating: clearMinRating ? null : minRating ?? this.minRating,
     );
   }
 
@@ -84,5 +105,9 @@ class ProductState extends Equatable {
     categoryErrorMessage,
     searchQuery,
     currentPage,
+    sortOption,
+    minPrice,
+    maxPrice,
+    minRating,
   ];
 }
