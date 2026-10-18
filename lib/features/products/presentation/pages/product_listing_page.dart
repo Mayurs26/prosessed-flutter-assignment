@@ -14,6 +14,9 @@ import '../../../cart/presentation/bloc/cart_state.dart';
 
 import 'package:shimmer/shimmer.dart';
 
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
+
 class ProductListingPage extends StatelessWidget {
   const ProductListingPage({super.key});
 
@@ -105,13 +108,28 @@ class _ProductListingViewState extends State<_ProductListingView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'ShopSphere',
-                  style: TextStyle(
-                    color: Color(0xFF30283D),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.6,
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Shop',
+                        style: TextStyle(
+                          color: Color(0xFF151B38),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.6,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Sphere',
+                        style: TextStyle(
+                          color: Color(0xFF5035FF),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.6,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 2),
@@ -146,17 +164,42 @@ class _ProductListingViewState extends State<_ProductListingView> {
             },
           ),
           const SizedBox(width: 8),
-          Padding(
-            padding: const EdgeInsets.only(right: 14),
-            child: IconButton(
-              tooltip: 'Profile',
-              onPressed: () => context.push('/profile'),
-              style: IconButton.styleFrom(
-                backgroundColor: const Color(0xFFF5F2FA),
-                foregroundColor: const Color(0xFF51465F),
-              ),
-              icon: const Icon(Icons.person_outline_rounded),
-            ),
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, authState) {
+              final imageUrl = authState is AuthSuccess
+                  ? authState.session.image
+                  : '';
+
+              return Padding(
+                padding: const EdgeInsets.only(right: 14),
+                child: IconButton(
+                  tooltip: 'Profile',
+                  onPressed: () => context.push('/profile'),
+                  padding: EdgeInsets.zero,
+                  icon: CircleAvatar(
+                    radius: 19,
+                    backgroundColor: const Color(0xFFECE8FF),
+                    child: ClipOval(
+                      child: imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              width: 38,
+                              height: 38,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) => const Icon(
+                                Icons.person_rounded,
+                                color: Color(0xFF7957F5),
+                              ),
+                            )
+                          : const Icon(
+                              Icons.person_rounded,
+                              color: Color(0xFF7957F5),
+                            ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
