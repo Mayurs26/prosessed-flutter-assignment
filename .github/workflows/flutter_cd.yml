@@ -1,6 +1,3 @@
-cd C:\Users\mayur\Desktop\Prosessed_ai\shopsphere
-
-@'
 name: ShopSphere Flutter CD
 
 on:
@@ -45,4 +42,3 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 7
-'@ | Set-Content -Path .github/workflows/flutter_cd.yml -Encoding utf8
