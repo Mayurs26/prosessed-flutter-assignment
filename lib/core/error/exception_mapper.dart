@@ -6,64 +6,68 @@ class ExceptionMapper {
   ExceptionMapper._();
 
   static AppFailure fromDioException(DioException exception) {
-    final type = exception.type;
+    switch (exception.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return const TimeoutFailure(
+          'The request took too long. Please try again.',
+        );
 
-    if (type == DioExceptionType.connectionTimeout ||
-        type == DioExceptionType.sendTimeout ||
-        type == DioExceptionType.receiveTimeout) {
-      return const TimeoutFailure();
+      case DioExceptionType.connectionError:
+        return const NetworkFailure(
+          'Unable to connect. Please check your internet connection.',
+        );
+
+      case DioExceptionType.badResponse:
+        return _mapStatusCode(exception.response?.statusCode);
+
+      case DioExceptionType.cancel:
+        return const UnknownFailure('The request was cancelled.');
+
+      case DioExceptionType.badCertificate:
+        return const NetworkFailure(
+          'A secure connection could not be established.',
+        );
+
+      case DioExceptionType.unknown:
+        return const UnknownFailure('Something went wrong. Please try again.');
+
+      default:
+        return const UnknownFailure(
+          'An unexpected network error occurred. Please try again.',
+        );
     }
-
-    if (type == DioExceptionType.connectionError) {
-      return const NetworkFailure();
-    }
-
-    if (type == DioExceptionType.badCertificate) {
-      return const NetworkFailure(
-        'A secure connection could not be established.',
-      );
-    }
-
-    if (type == DioExceptionType.cancel) {
-      return const UnknownFailure('The request was cancelled.');
-    }
-
-    if (type == DioExceptionType.badResponse) {
-      return _mapStatusCode(exception.response?.statusCode);
-    }
-
-    return const UnknownFailure();
   }
 
   static AppFailure _mapStatusCode(int? statusCode) {
-    if (statusCode == null) {
-      return const UnknownFailure();
-    }
+    switch (statusCode) {
+      case 400:
+        return const ValidationFailure(
+          'Invalid request. Please check your input.',
+        );
 
-    if (statusCode == 401) {
-      return const ClientFailure(
-        'Your session has expired. Please log in again.',
-      );
-    }
+      case 401:
+      case 403:
+        return const UnauthorizedFailure(
+          'Your session has expired. Please sign in again.',
+        );
 
-    if (statusCode == 404) {
-      return const ClientFailure('The requested resource was not found.');
-    }
+      case 404:
+        return const NotFoundFailure('The requested resource was not found.');
 
-    if (statusCode == 400) {
-      return const ClientFailure(
-        'The request was invalid. Please check your input.',
-      );
-    }
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        return const ServerFailure(
+          'The server is temporarily unavailable. Please retry.',
+        );
 
-    if (statusCode >= 500) {
-      return const ServerFailure();
+      default:
+        return const UnknownFailure(
+          'An unexpected error occurred. Please try again.',
+        );
     }
-
-    if (statusCode >= 400) {
-      return ClientFailure('Request failed (HTTP $statusCode).');
-    }
-
-    return const UnknownFailure();
   }
 }
