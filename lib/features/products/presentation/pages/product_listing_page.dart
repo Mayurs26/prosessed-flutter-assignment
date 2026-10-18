@@ -73,39 +73,94 @@ class _ProductListingViewState extends State<_ProductListingView> {
     return Scaffold(
       backgroundColor: const Color(0xFFFEFDFF),
       appBar: AppBar(
-        title: const Text(
-          'ShopSphere',
-          style: TextStyle(fontWeight: FontWeight.w800),
+        backgroundColor: const Color(0xFFFEFCFF),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        toolbarHeight: 70,
+        titleSpacing: 18,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 44,
+              width: 44,
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0EAFF),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Image.asset(
+                'assets/images/logo_bag.png',
+                fit: BoxFit.contain,
+                errorBuilder: (_, _, _) => const Icon(
+                  Icons.shopping_bag_rounded,
+                  color: Color(0xFF7957F5),
+                  size: 27,
+                ),
+              ),
+            ),
+            const SizedBox(width: 11),
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'ShopSphere',
+                  style: TextStyle(
+                    color: Color(0xFF30283D),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.6,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Find your everyday favourites',
+                  style: TextStyle(
+                    color: Color(0xFF91899F),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-
         actions: [
           BlocBuilder<CartBloc, CartState>(
             builder: (context, cartState) {
               return IconButton(
                 tooltip: 'Shopping cart (${cartState.totalItems} items)',
                 onPressed: () => context.push('/cart'),
+                style: IconButton.styleFrom(
+                  backgroundColor: const Color(0xFFF2EDFF),
+                  foregroundColor: const Color(0xFF7957F5),
+                ),
                 icon: Badge(
                   isLabelVisible: cartState.totalItems > 0,
                   label: Text('${cartState.totalItems}'),
-                  child: const Icon(Icons.shopping_cart_outlined),
+                  child: const Icon(Icons.shopping_bag_outlined),
                 ),
               );
             },
           ),
-          // Profile avatar
+          const SizedBox(width: 8),
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: 14),
             child: IconButton(
               tooltip: 'Profile',
               onPressed: () => context.push('/profile'),
-              icon: const CircleAvatar(
-                radius: 17,
-                child: Icon(Icons.person_outline, size: 22),
+              style: IconButton.styleFrom(
+                backgroundColor: const Color(0xFFF5F2FA),
+                foregroundColor: const Color(0xFF51465F),
               ),
+              icon: const Icon(Icons.person_outline_rounded),
             ),
           ),
         ],
       ),
+
       body: Column(
         children: [
           Padding(
@@ -120,24 +175,55 @@ class _ProductListingViewState extends State<_ProductListingView> {
                 );
               },
               decoration: InputDecoration(
-                hintText: 'Search products...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchQuery.isEmpty
-                    ? null
-                    : IconButton(
-                        onPressed: () {
-                          _searchController.clear();
-
-                          setState(() => _searchQuery = '');
-
-                          context.read<ProductBloc>().add(
-                            const ProductSearchChanged(''),
-                          );
-                        },
-                        icon: const Icon(Icons.close),
-                      ),
+                hintText: 'Search products, brands...',
+                hintStyle: const TextStyle(
+                  color: Color(0xFF9B93AA),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: Color(0xFF7957F5),
+                  size: 23,
+                ),
+                suffixIcon: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 180),
+                  child: _searchQuery.isEmpty
+                      ? const SizedBox.shrink(key: ValueKey('empty'))
+                      : IconButton(
+                          key: const ValueKey('clear'),
+                          tooltip: 'Clear search',
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                            context.read<ProductBloc>().add(
+                              const ProductSearchChanged(''),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.close_rounded,
+                            color: Color(0xFF858091),
+                            size: 20,
+                          ),
+                        ),
+                ),
                 filled: true,
-                fillColor: const Color(0xFFF3F1FF),
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 17,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(color: Color(0xFFECE7F5)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF9B83FF),
+                    width: 1.5,
+                  ),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
                   borderSide: BorderSide.none,
@@ -170,10 +256,31 @@ class _ProductListingViewState extends State<_ProductListingView> {
                     ChoiceChip(
                       label: const Text('All Products'),
                       selected: state.selectedCategorySlug == null,
+                      showCheckmark: false,
+                      labelStyle: TextStyle(
+                        color: state.selectedCategorySlug == null
+                            ? Colors.white
+                            : const Color(0xFF665C77),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      selectedColor: const Color(0xFF7957F5),
+                      backgroundColor: Colors.white,
+                      side: BorderSide(
+                        color: state.selectedCategorySlug == null
+                            ? const Color(0xFF7957F5)
+                            : const Color(0xFFECE7F5),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 8,
+                      ),
                       onSelected: (_) {
                         _searchController.clear();
                         setState(() => _searchQuery = '');
-
                         context.read<ProductBloc>().add(
                           const ProductCategorySelected(null),
                         );
@@ -221,16 +328,25 @@ class _ProductListingViewState extends State<_ProductListingView> {
                         height: 48,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF3F1FF),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFFE5E0FF)),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFECE7F5)),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<ProductSortOption>(
                             isExpanded: true,
                             value: state.sortOption,
-                            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                            borderRadius: BorderRadius.circular(14),
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Color(0xFF7957F5),
+                            ),
+                            style: const TextStyle(
+                              color: Color(0xFF51465F),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            dropdownColor: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
                             hint: const Text('Sort by'),
                             items: const [
                               DropdownMenuItem(
@@ -268,14 +384,15 @@ class _ProductListingViewState extends State<_ProductListingView> {
                     const SizedBox(width: 10),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF5035FF),
-                        side: const BorderSide(color: Color(0xFF5035FF)),
+                        foregroundColor: const Color(0xFF7957F5),
+                        backgroundColor: const Color(0xFFF5F1FF),
+                        side: const BorderSide(color: Color(0xFFE5DCFF)),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 14,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
                       onPressed: () async {
@@ -435,13 +552,17 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      elevation: 1,
+      elevation: 0,
       color: Colors.white,
+      margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: const BorderSide(color: Color(0xFFEAE8F5)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFECE7F5)),
       ),
       child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        splashColor: const Color(0xFF7957F5).withValues(alpha: 0.08),
+        highlightColor: const Color(0xFF7957F5).withValues(alpha: 0.04),
         onTap: () {
           context.push('/product-details', extra: product);
         },

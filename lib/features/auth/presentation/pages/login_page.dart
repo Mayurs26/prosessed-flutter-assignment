@@ -147,29 +147,6 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 12),
               _buildLoginButton(context, state),
               const SizedBox(height: 26),
-              const SizedBox(height: 28),
-              const Text(
-                "Don't have an account?",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: _muted, fontSize: 15),
-              ),
-              const SizedBox(height: 12),
-              OutlinedButton(
-                onPressed: () => context.push('/signup'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: _purple,
-                  minimumSize: const Size.fromHeight(58),
-                  side: const BorderSide(color: _purple, width: 1.4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                ),
-                child: const Text(
-                  'Create Account',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-                ),
-              ),
-              const SizedBox(height: 20),
             ],
           ),
         );
@@ -252,31 +229,6 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 12),
                     _buildLoginButton(context, state),
                     const SizedBox(height: 24),
-                    const SizedBox(height: 28),
-                    const Text(
-                      "Don't have an account?",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: _muted, fontSize: 15),
-                    ),
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: () => context.push('/signup'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: _purple,
-                        minimumSize: const Size.fromHeight(58),
-                        side: const BorderSide(color: _purple, width: 1.4),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32),
-                        ),
-                      ),
-                      child: const Text(
-                        'Create Account',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
