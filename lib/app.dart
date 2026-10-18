@@ -8,6 +8,7 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/cart/presentation/bloc/cart_bloc.dart';
 import 'features/cart/presentation/bloc/checkout_bloc.dart';
 import 'features/products/presentation/bloc/product_bloc.dart';
+import 'features/cart/presentation/bloc/cart_event.dart';
 
 class ShopSphereApp extends StatelessWidget {
   const ShopSphereApp({super.key});
@@ -18,7 +19,9 @@ class ShopSphereApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>(create: (_) => getIt<AuthBloc>()),
         BlocProvider<ProductBloc>(create: (_) => getIt<ProductBloc>()),
-        BlocProvider<CartBloc>(create: (_) => getIt<CartBloc>()),
+        BlocProvider<CartBloc>(
+          create: (_) => getIt<CartBloc>()..add(const CartLoaded()),
+        ),
         BlocProvider<CheckoutBloc>(create: (_) => getIt<CheckoutBloc>()),
       ],
       child: MaterialApp.router(
