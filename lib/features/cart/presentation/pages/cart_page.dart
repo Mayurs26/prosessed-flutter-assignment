@@ -56,7 +56,7 @@ class CartPage extends StatelessWidget {
                       const Text('Add some products to get started.'),
                       const SizedBox(height: 16),
                       FilledButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => context.go('/products'),
                         child: const Text('Continue Shopping'),
                       ),
                     ],

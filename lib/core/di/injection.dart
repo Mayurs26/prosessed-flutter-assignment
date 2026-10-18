@@ -30,6 +30,7 @@ import '../../features/cart/domain/usecases/checkout_use_case.dart';
 import '../../features/cart/presentation/bloc/checkout_bloc.dart';
 import '../../features/auth/domain/usecases/get_current_user_use_case.dart';
 import '../../features/auth/domain/usecases/logout_use_case.dart';
+import '../../features/products/domain/usecases/get_product_by_id_use_case.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -112,6 +113,9 @@ Future<void> configureDependencies() async {
   // Get products use case.
   getIt.registerLazySingleton<GetProductsUseCase>(
     () => GetProductsUseCase(getIt<ProductRepository>()),
+  );
+  getIt.registerLazySingleton<GetProductByIdUseCase>(
+    () => GetProductByIdUseCase(getIt<ProductRepository>()),
   );
 
   getIt.registerLazySingleton<GetProductCategoriesUseCase>(

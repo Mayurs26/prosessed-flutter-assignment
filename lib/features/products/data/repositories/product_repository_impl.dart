@@ -93,4 +93,17 @@ class ProductRepositoryImpl implements ProductRepository {
       );
     }
   }
+
+  @override
+  Future<Product> getProductById(int id) async {
+    try {
+      return await _remoteDataSource.getProductById(id);
+    } on DioException catch (error) {
+      throw ExceptionMapper.fromDioException(error);
+    } on FormatException {
+      throw const ParsingFailure(
+        'Unable to process the product details response.',
+      );
+    }
+  }
 }

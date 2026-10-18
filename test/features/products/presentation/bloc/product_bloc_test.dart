@@ -409,4 +409,50 @@ void main() {
           .having((s) => s.errorMessage, 'error message', isNotNull),
     ],
   );
+
+  blocTest<ProductBloc, ProductState>(
+    'loads the next page and appends products',
+    build: buildBloc,
+    setUp: () {
+      when(() => getProducts(limit: 20, skip: 20)).thenAnswer(
+        (_) async => List.generate(20, (index) => makeProduct(id: index + 21)),
+      );
+    },
+    seed: () => ProductState(
+      status: ProductStatus.success,
+      products: List.generate(20, (index) => makeProduct(id: index + 1)),
+      currentPage: 1,
+    ),
+    act: (bloc) => bloc.add(const MoreProductsRequested()),
+    expect: () => [
+      isA<ProductState>().having(
+        (state) => state.isLoadingMore,
+        'loading more',
+        true,
+      ),
+      isA<ProductState>()
+          .having((state) => state.products.length, 'product count', 40)
+          .having((state) => state.currentPage, 'current page', 2)
+          .having((state) => state.isLoadingMore, 'loading complete', false),
+    ],
+    verify: (_) {
+      verify(() => getProducts(limit: 20, skip: 20)).called(1);
+    },
+  );
+
+  blocTest<ProductBloc, ProductState>(
+    'does not request another page when maximum is reached',
+    build: buildBloc,
+    seed: () => ProductState(
+      status: ProductStatus.success,
+      products: [makeProduct()],
+      currentPage: 1,
+      hasReachedMax: true,
+    ),
+    act: (bloc) => bloc.add(const MoreProductsRequested()),
+    expect: () => <ProductState>[],
+    verify: (_) {
+      verifyNever(() => getProducts(limit: 20, skip: 20));
+    },
+  );
 }

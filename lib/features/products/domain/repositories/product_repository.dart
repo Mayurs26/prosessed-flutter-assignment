@@ -17,4 +17,5 @@ abstract class ProductRepository {
     required int limit,
     required int skip,
   });
+  Future<Product> getProductById(int id);
 }

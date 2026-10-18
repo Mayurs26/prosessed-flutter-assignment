@@ -16,7 +16,7 @@ abstract class ProductRemoteDataSource {
   });
 
   Future<List<ProductCategoryModel>> getCategories();
-
+  Future<ProductModel> getProductById(int id);
   Future<List<ProductModel>> getProductsByCategory({
     required String categorySlug,
     required int limit,
@@ -118,5 +118,20 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     return productsJson
         .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
         .toList();
+  }
+
+  @override
+  Future<ProductModel> getProductById(int id) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      ApiEndpoints.productDetails(id),
+    );
+
+    final data = response.data;
+
+    if (data == null) {
+      throw const FormatException('Invalid product details response');
+    }
+
+    return ProductModel.fromJson(data);
   }
 }
