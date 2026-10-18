@@ -21,7 +21,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductsRefreshed>(_onProductsRefreshed);
     on<MoreProductsRequested>(_onMoreProductsRequested);
 
-    // Retained for compatibility with existing events.
     on<NextProductsPageRequested>(_onNextPageRequested);
     on<PreviousProductsPageRequested>(_onPreviousPageRequested);
 
@@ -66,19 +65,32 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     return _getProductsUseCase(limit: _pageSize, skip: skip);
   }
 
-  List<Product> _applyLocalFiltersAndSort(List<Product> products) {
-    final minPrice = state.minPrice;
-    final maxPrice = state.maxPrice;
-    final minRating = state.minRating;
+  List<Product> _applyLocalFiltersAndSort(
+    List<Product> products, {
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    ProductSortOption? sortOption,
+  }) {
+    final effectiveMinPrice = minPrice ?? state.minPrice;
+    final effectiveMaxPrice = maxPrice ?? state.maxPrice;
+    final effectiveMinRating = minRating ?? state.minRating;
+    final effectiveSortOption = sortOption ?? state.sortOption;
 
     final filtered = products.where((product) {
-      if (minPrice != null && product.price < minPrice) return false;
-      if (maxPrice != null && product.price > maxPrice) return false;
-      if (minRating != null && product.rating < minRating) return false;
+      if (effectiveMinPrice != null && product.price < effectiveMinPrice) {
+        return false;
+      }
+      if (effectiveMaxPrice != null && product.price > effectiveMaxPrice) {
+        return false;
+      }
+      if (effectiveMinRating != null && product.rating < effectiveMinRating) {
+        return false;
+      }
       return true;
     }).toList();
 
-    switch (state.sortOption) {
+    switch (effectiveSortOption) {
       case ProductSortOption.defaultOrder:
         break;
       case ProductSortOption.priceLowToHigh:
@@ -349,12 +361,26 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     ProductFiltersChanged event,
     Emitter<ProductState> emit,
   ) {
+    final minPrice = event.minPrice;
+    final maxPrice = event.maxPrice;
+    final minRating = event.minRating;
+
+    final filteredProducts = _applyLocalFiltersAndSort(
+      state.products,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      minRating: minRating,
+    );
+
     emit(
       state.copyWith(
-        minPrice: event.minPrice,
-        maxPrice: event.maxPrice,
-        minRating: event.minRating,
-        products: _applyLocalFiltersAndSort(state.products),
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        minRating: minRating,
+        products: filteredProducts,
+        clearMinPrice: minPrice == null,
+        clearMaxPrice: maxPrice == null,
+        clearMinRating: minRating == null,
       ),
     );
   }
@@ -368,6 +394,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         minPrice: null,
         maxPrice: null,
         minRating: null,
+        clearMinPrice: true,
+        clearMaxPrice: true,
+        clearMinRating: true,
         products: _sortProducts(state.products, state.sortOption),
       ),
     );
