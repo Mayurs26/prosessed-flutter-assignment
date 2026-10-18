@@ -1,0 +1,48 @@
+cd C:\Users\mayur\Desktop\Prosessed_ai\shopsphere
+
+@'
+name: ShopSphere Flutter CD
+
+on:
+  workflow_run:
+    workflows:
+      - ShopSphere Flutter CI
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    name: Build and Upload Release APK
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: shopsphere-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 7
+'@ | Set-Content -Path .github/workflows/flutter_cd.yml -Encoding utf8
