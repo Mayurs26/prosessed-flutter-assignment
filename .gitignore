@@ -46,3 +46,17 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Android signing secrets
+*.jks
+*.keystore
+key.properties
+
+# Local machine files
+Thumbs.db
+desktop.ini
