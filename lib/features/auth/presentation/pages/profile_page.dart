@@ -9,9 +9,12 @@ import '../bloc/auth_state.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  static const Color _purple = Color(0xFF5035FF);
-  static const Color _deepPurple = Color(0xFF21165C);
-  static const Color _background = Color(0xFFF7F6FC);
+  static const Color _forest = Color(0xFF294B45);
+  static const Color _ink = Color(0xFF172B2A);
+  static const Color _sage = Color(0xFFE8EDE3);
+  static const Color _canvas = Color(0xFFF5F7F2);
+  static const Color _muted = Color(0xFF77827A);
+  static const Color _line = Color(0xFFDCE3D8);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +23,7 @@ class ProfilePage extends StatelessWidget {
 
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthInitial) {
-          context.go('/login');
-        }
-
+        if (state is AuthInitial) context.go('/login');
         if (state is AuthFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -37,11 +37,16 @@ class ProfilePage extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is! AuthSuccess) {
+          final failed = state is AuthFailure;
           return Scaffold(
-            backgroundColor: _background,
+            backgroundColor: _canvas,
             appBar: AppBar(
-              title: const Text('My Profile'),
-              backgroundColor: _background,
+              title: const Text(
+                'My profile',
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+              backgroundColor: _canvas,
+              surfaceTintColor: Colors.transparent,
             ),
             body: Center(
               child: Padding(
@@ -50,48 +55,51 @@ class ProfilePage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      height: 88,
-                      width: 88,
-                      decoration: BoxDecoration(
-                        color: _purple.withValues(alpha: 0.08),
+                      height: 84,
+                      width: 84,
+                      decoration: const BoxDecoration(
+                        color: _sage,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.person_outline_rounded,
-                        size: 44,
-                        color: _purple,
+                      child: Icon(
+                        failed
+                            ? Icons.person_off_outlined
+                            : Icons.person_outline_rounded,
+                        size: 40,
+                        color: _forest,
                       ),
                     ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 20),
                     Text(
-                      state is AuthFailure
+                      failed
                           ? 'Session unavailable'
-                          : 'Loading your profile',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                          : 'Getting your profile ready',
                       textAlign: TextAlign.center,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: _ink,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 9),
                     Text(
-                      state is AuthFailure
+                      failed
                           ? state.message
-                          : 'Please wait while we prepare your account.',
+                          : 'Just a moment while we load your account details.',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colors.onSurfaceVariant,
+                        color: _muted,
                         height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    if (state is AuthFailure)
+                    const SizedBox(height: 22),
+                    if (failed)
                       FilledButton.icon(
                         onPressed: () => context.go('/login'),
                         icon: const Icon(Icons.login_rounded),
                         label: const Text('Go to Login'),
                       )
                     else
-                      const CircularProgressIndicator(color: _purple),
+                      const CircularProgressIndicator(color: _forest),
                   ],
                 ),
               ),
@@ -103,265 +111,321 @@ class ProfilePage extends StatelessWidget {
         final displayName = session.fullName.trim().isNotEmpty
             ? session.fullName.trim()
             : session.username;
+        final loggingOut = state is AuthLoggingOut;
 
         return Scaffold(
-          backgroundColor: _background,
+          backgroundColor: _canvas,
           body: SafeArea(
-            top: false,
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 12, 22, 0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: _forest,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: const Icon(
+                            Icons.person_pin_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'MY PROFILE',
+                                style: TextStyle(
+                                  color: _ink,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: .3,
+                                ),
+                              ),
+                              SizedBox(height: 3),
+                              Text(
+                                'Your personal space',
+                                style: TextStyle(color: _muted, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Log out',
+                          onPressed: loggingOut
+                              ? null
+                              : () => _confirmLogout(context),
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: _forest,
+                            side: const BorderSide(color: _line),
+                          ),
+                          icon: const Icon(Icons.logout_rounded),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      // A compact identity card intentionally replaces the previous full-width gradient hero.
                       Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.fromLTRB(24, 62, 24, 76),
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [_deepPurple, _purple, Color(0xFF806AFF)],
-                          ),
-                          borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(36),
-                          ),
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: _forest,
+                          borderRadius: BorderRadius.circular(28),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _forest.withValues(alpha: .14),
+                              blurRadius: 24,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: 44,
-                                  width: 44,
+                                  padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.14),
-                                    borderRadius: BorderRadius.circular(14),
+                                    color: Colors.white.withValues(alpha: .15),
+                                    shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.2,
+                                      color: Colors.white.withValues(alpha: .3),
+                                    ),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 35,
+                                    backgroundColor: _sage,
+                                    child: ClipOval(
+                                      child: session.image.isNotEmpty
+                                          ? Image.network(
+                                              session.image,
+                                              width: 70,
+                                              height: 70,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, _, _) =>
+                                                  const Icon(
+                                                    Icons.person_rounded,
+                                                    color: _forest,
+                                                    size: 35,
+                                                  ),
+                                            )
+                                          : const Icon(
+                                              Icons.person_rounded,
+                                              color: _forest,
+                                              size: 35,
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 11,
+                                    vertical: 7,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFD5E7A4),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.verified_rounded,
+                                        size: 14,
+                                        color: _forest,
                                       ),
-                                    ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'ACCOUNT',
+                                        style: TextStyle(
+                                          color: _forest,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: .8,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  child: const Icon(
-                                    Icons.person_rounded,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                const Expanded(
-                                  child: Text(
-                                    'MY ACCOUNT',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 2,
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  tooltip: 'Log out',
-                                  onPressed: state is AuthLoggingOut
-                                      ? null
-                                      : () => _confirmLogout(context),
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: Colors.white.withValues(
-                                      alpha: 0.13,
-                                    ),
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  icon: const Icon(Icons.logout_rounded),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 22),
                             const Text(
-                              'Hello there,',
+                              'WELCOME BACK',
                               style: TextStyle(
-                                color: Color(0xFFDCD5FF),
-                                fontSize: 16,
+                                color: Color(0xFFC9D7CB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 2,
                               ),
                             ),
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 7),
                             Text(
                               displayName,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 30,
+                                fontSize: 26,
                                 height: 1.15,
                                 fontWeight: FontWeight.w900,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
                             Text(
-                              'Your ShopSphere account, all in one place.',
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.82),
-                                fontSize: 13,
-                                height: 1.5,
+                              '@${session.username}',
+                              style: const TextStyle(
+                                color: Color(0xFFD5E7A4),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
                               ),
+                            ),
+                            const SizedBox(height: 20),
+                            Container(
+                              height: 1,
+                              color: Colors.white.withValues(alpha: .17),
+                            ),
+                            const SizedBox(height: 14),
+                            const Row(
+                              children: [
+                                Icon(
+                                  Icons.shield_outlined,
+                                  color: Color(0xFFD5E7A4),
+                                  size: 17,
+                                ),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Your account details are ready whenever you need them.',
+                                    style: TextStyle(
+                                      color: Color(0xFFE0E8DF),
+                                      fontSize: 12,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      Positioned(
-                        bottom: -44,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: _background,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: _deepPurple.withValues(alpha: 0.12),
-                                  blurRadius: 22,
-                                  offset: const Offset(0, 8),
+                      const SizedBox(height: 30),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Personal details',
+                                  style: TextStyle(
+                                    color: _ink,
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Information linked to your account',
+                                  style: TextStyle(color: _muted, fontSize: 12),
                                 ),
                               ],
                             ),
-                            child: CircleAvatar(
-                              radius: 48,
-                              backgroundColor: const Color(0xFFE8E3FF),
-                              child: ClipOval(
-                                child: session.image.isNotEmpty
-                                    ? Image.network(
-                                        session.image,
-                                        width: 96,
-                                        height: 96,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, _, _) => const Icon(
-                                          Icons.person_rounded,
-                                          size: 48,
-                                          color: _purple,
-                                        ),
-                                      )
-                                    : const Icon(
-                                        Icons.person_rounded,
-                                        size: 48,
-                                        color: _purple,
-                                      ),
-                              ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(9),
+                            decoration: BoxDecoration(
+                              color: _sage,
+                              borderRadius: BorderRadius.circular(13),
+                            ),
+                            child: const Icon(
+                              Icons.tune_rounded,
+                              color: _forest,
+                              size: 19,
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 62, 20, 28),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      Center(
-                        child: Text(
-                          displayName,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: _deepPurple,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Center(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 13,
-                            vertical: 7,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEAE6FF),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Text(
-                            '@${session.username}',
-                            style: const TextStyle(
-                              color: _purple,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-
-                      const _SectionHeading(
-                        title: 'Personal information',
-                        subtitle: 'Your account details',
-                      ),
-                      const SizedBox(height: 15),
-
-                      _ProfileInfoTile(
-                        icon: Icons.email_outlined,
-                        label: 'Email address',
+                      const SizedBox(height: 16),
+                      _DetailCard(
+                        icon: Icons.alternate_email_rounded,
+                        label: 'EMAIL ADDRESS',
                         value: session.email.isNotEmpty
                             ? session.email
                             : 'Not provided',
-                        iconColor: const Color(0xFF5035FF),
+                        iconBg: const Color(0xFFE5EDE0),
                       ),
-                      _ProfileInfoTile(
-                        icon: Icons.phone_outlined,
-                        label: 'Phone number',
+                      _DetailCard(
+                        icon: Icons.call_outlined,
+                        label: 'PHONE NUMBER',
                         value: session.phone?.isNotEmpty == true
                             ? session.phone!
                             : 'Not provided',
-                        iconColor: const Color(0xFF00897B),
+                        iconBg: const Color(0xFFE8EFE8),
                       ),
-                      _ProfileInfoTile(
-                        icon: Icons.badge_outlined,
-                        label: 'User ID',
+                      _DetailCard(
+                        icon: Icons.fingerprint_rounded,
+                        label: 'USER ID',
                         value: session.id.toString(),
-                        iconColor: const Color(0xFFE67E22),
+                        iconBg: const Color(0xFFF0F1E5),
                       ),
-
-                      const SizedBox(height: 24),
-
+                      const SizedBox(height: 20),
                       Container(
-                        padding: const EdgeInsets.all(18),
+                        padding: const EdgeInsets.all(17),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: const Color(0xFFE8EDE3),
                           borderRadius: BorderRadius.circular(22),
-                          border: Border.all(color: const Color(0xFFECE9F7)),
+                          border: Border.all(color: _line),
                         ),
                         child: Row(
                           children: [
                             Container(
-                              height: 46,
-                              width: 46,
+                              width: 44,
+                              height: 44,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFECE8FF),
-                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
                               ),
                               child: const Icon(
-                                Icons.verified_user_outlined,
-                                color: _purple,
+                                Icons.lock_outline_rounded,
+                                color: _forest,
                               ),
                             ),
-                            const SizedBox(width: 14),
+                            const SizedBox(width: 13),
                             const Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Your account',
+                                    'Signed in securely',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w800,
+                                      color: _ink,
                                       fontSize: 14,
+                                      fontWeight: FontWeight.w800,
                                     ),
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    'Manage your ShopSphere session securely.',
+                                    'Your session is active on this device.',
                                     style: TextStyle(
-                                      color: Color(0xFF77738A),
+                                      color: _muted,
                                       fontSize: 12,
                                       height: 1.4,
                                     ),
@@ -371,63 +435,58 @@ class ProfilePage extends StatelessWidget {
                             ),
                             const Icon(
                               Icons.check_circle_rounded,
-                              color: Color(0xFF239B70),
-                              size: 22,
+                              color: _forest,
+                              size: 21,
                             ),
                           ],
                         ),
                       ),
-
-                      const SizedBox(height: 30),
-
+                      const SizedBox(height: 28),
                       SizedBox(
                         height: 56,
                         child: OutlinedButton.icon(
-                          onPressed: state is AuthLoggingOut
+                          onPressed: loggingOut
                               ? null
                               : () => _confirmLogout(context),
-                          icon: state is AuthLoggingOut
+                          icon: loggingOut
                               ? const SizedBox(
-                                  height: 19,
-                                  width: 19,
+                                  width: 18,
+                                  height: 18,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                   ),
                                 )
                               : const Icon(Icons.logout_rounded),
                           label: Text(
-                            state is AuthLoggingOut
+                            loggingOut
                                 ? 'Logging out...'
-                                : 'Log out',
+                                : 'Log out of ShopSphere',
                           ),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: colors.error,
                             backgroundColor: Colors.white,
                             side: BorderSide(
-                              color: colors.error.withValues(alpha: 0.45),
+                              color: colors.error.withValues(alpha: .35),
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(17),
                             ),
                             textStyle: const TextStyle(
                               fontWeight: FontWeight.w800,
-                              fontSize: 15,
+                              fontSize: 14,
                             ),
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-                      Center(
+                      const Center(
                         child: Text(
                           'SHOP SMART. LIVE BETTER.',
                           style: TextStyle(
-                            color: colors.onSurfaceVariant.withValues(
-                              alpha: 0.65,
-                            ),
+                            color: _muted,
                             fontSize: 10,
                             letterSpacing: 2,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
@@ -446,9 +505,13 @@ class ProfilePage extends StatelessWidget {
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: _canvas,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        icon: const Icon(Icons.logout_rounded, color: _purple, size: 32),
-        title: const Text('Log out?'),
+        icon: const Icon(Icons.logout_rounded, color: _forest, size: 32),
+        title: const Text(
+          'Log out?',
+          style: TextStyle(color: _ink, fontWeight: FontWeight.w900),
+        ),
         content: const Text('Are you sure you want to log out of ShopSphere?'),
         actions: [
           TextButton(
@@ -457,90 +520,56 @@ class ProfilePage extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF294B45),
+              foregroundColor: Colors.white,
+            ),
             child: const Text('Log out'),
           ),
         ],
       ),
     );
-
     if (shouldLogout == true && context.mounted) {
       context.read<AuthBloc>().add(const LogoutRequested());
     }
   }
 }
 
-class _SectionHeading extends StatelessWidget {
-  const _SectionHeading({required this.title, required this.subtitle});
-
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: Color(0xFF21165C),
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          subtitle,
-          style: const TextStyle(color: Color(0xFF858197), fontSize: 13),
-        ),
-      ],
-    );
-  }
-}
-
-class _ProfileInfoTile extends StatelessWidget {
-  const _ProfileInfoTile({
+class _DetailCard extends StatelessWidget {
+  const _DetailCard({
     required this.icon,
     required this.label,
     required this.value,
-    required this.iconColor,
+    required this.iconBg,
   });
 
   final IconData icon;
   final String label;
   final String value;
-  final Color iconColor;
+  final Color iconBg;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 11),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFECE9F7)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF21165C).withValues(alpha: 0.025),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(19),
+        border: Border.all(color: const Color(0xFFDCE3D8)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 46,
             width: 46,
+            height: 46,
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.10),
+              color: iconBg,
               borderRadius: BorderRadius.circular(15),
             ),
-            child: Icon(icon, color: iconColor, size: 22),
+            child: Icon(icon, color: const Color(0xFF294B45), size: 21),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 13),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -548,22 +577,28 @@ class _ProfileInfoTile extends StatelessWidget {
                 Text(
                   label,
                   style: const TextStyle(
-                    color: Color(0xFF858197),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF77827A),
+                    fontSize: 10,
+                    letterSpacing: .8,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 6),
                 SelectableText(
                   value,
                   style: const TextStyle(
-                    color: Color(0xFF292442),
+                    color: Color(0xFF172B2A),
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
             ),
+          ),
+          const Icon(
+            Icons.chevron_right_rounded,
+            color: Color(0xFF9AA69B),
+            size: 20,
           ),
         ],
       ),

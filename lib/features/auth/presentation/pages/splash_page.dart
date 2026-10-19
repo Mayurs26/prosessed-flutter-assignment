@@ -24,10 +24,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   late final Animation<Offset> _slideAnimation;
   late final Animation<double> _scaleAnimation;
 
-  static const Color _purple = Color(0xFF7957F5);
-  static const Color _ink = Color(0xFF19172F);
-  static const Color _muted = Color(0xFF827D94);
-  static const Color _background = Color(0xFFFCFBFF);
+  static const Color _purple = Color(0xFF294B45);
+  static const Color _ink = Color(0xFF172B2A);
+  static const Color _muted = Color(0xFF77827A);
+  static const Color _background = Color(0xFFF5F7F2);
 
   @override
   void initState() {
@@ -111,12 +111,12 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                   const Positioned(
                     top: -100,
                     right: -100,
-                    child: _AmbientGlow(size: 290, color: Color(0xFFE5DCFF)),
+                    child: _AmbientGlow(size: 290, color: Color(0xFFE8EDE3)),
                   ),
                   const Positioned(
                     bottom: -120,
                     left: -100,
-                    child: _AmbientGlow(size: 300, color: Color(0xFFF1E8FF)),
+                    child: _AmbientGlow(size: 300, color: Color(0xFFF0F3EC)),
                   ),
 
                   // Small moving decorative dots.
@@ -159,7 +159,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                       width: 37,
                                       padding: const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF0EBFF),
+                                        color: const Color(0xFFE8EDE3),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Image.asset(
@@ -228,7 +228,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: const Color(0xFFECE5FF),
+                                            color: const Color(0xFFDCE3D8),
                                             width: 1.2,
                                           ),
                                         ),
@@ -238,7 +238,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                         height: heroSize * 0.72,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: const Color(0xFFF5F1FF),
+                                          color: const Color(0xFFF0F3EC),
                                           border: Border.all(
                                             color: Colors.white,
                                             width: 8,
@@ -259,11 +259,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                               borderRadius:
                                                   BorderRadius.circular(32),
                                               border: Border.all(
-                                                color: const Color(0xFFECE7F8),
+                                                color: const Color(0xFFDCE3D8),
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: const Color(0xFF7A60C8)
+                                                  color: const Color(0xFF294B45)
                                                       .withValues(alpha: 0.12),
                                                   blurRadius: 36,
                                                   offset: const Offset(0, 18),
@@ -291,8 +291,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                         child: _FloatingTile(
                                           controller: _floatController,
                                           icon: Icons.headphones_rounded,
-                                          background: const Color(0xFFE7F4FF),
-                                          iconColor: const Color(0xFF4F83CC),
+                                          background: const Color(0xFFE8EDE3),
+                                          iconColor: const Color(0xFF365C37),
                                           delay: 0.4,
                                         ),
                                       ),
@@ -303,8 +303,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                         child: _FloatingTile(
                                           controller: _floatController,
                                           icon: Icons.watch_rounded,
-                                          background: const Color(0xFFFFEDE4),
-                                          iconColor: const Color(0xFFD98762),
+                                          background: const Color(0xFFF6E9D9),
+                                          iconColor: const Color(0xFF9A6845),
                                           delay: 1.1,
                                         ),
                                       ),
@@ -315,8 +315,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                         child: _FloatingTile(
                                           controller: _floatController,
                                           icon: Icons.local_shipping_rounded,
-                                          background: const Color(0xFFE7F7EF),
-                                          iconColor: const Color(0xFF419A75),
+                                          background: const Color(0xFFE8F2DF),
+                                          iconColor: const Color(0xFF365C37),
                                           delay: 0.7,
                                         ),
                                       ),
@@ -335,7 +335,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                               15,
                                             ),
                                             border: Border.all(
-                                              color: const Color(0xFFECE7F8),
+                                              color: const Color(0xFFDCE3D8),
                                             ),
                                             boxShadow: [
                                               BoxShadow(
@@ -389,7 +389,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                         vertical: 7,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF0EBFF),
+                                        color: const Color(0xFFE8EDE3),
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                       child: const Row(
@@ -462,7 +462,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                       borderRadius: BorderRadius.circular(20),
                                       child: const LinearProgressIndicator(
                                         minHeight: 4,
-                                        backgroundColor: Color(0xFFEAE4F8),
+                                        backgroundColor: Color(0xFFDCE3D8),
                                         color: _purple,
                                       ),
                                     ),
@@ -549,10 +549,10 @@ class _FloatingTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFECE7F8)),
+          border: Border.all(color: const Color(0xFFDCE3D8)),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF4A386E).withValues(alpha: 0.07),
+              color: const Color(0xFF294B45).withValues(alpha: 0.07),
               blurRadius: 18,
               offset: const Offset(0, 7),
             ),
@@ -626,7 +626,7 @@ class _AccentDots extends CustomPainter {
       final y = size.height * dot.y + wave * 7;
       final opacity = 0.18 + ((wave + 1) / 2) * 0.25;
 
-      paint.color = const Color(0xFF9B83E8).withValues(alpha: opacity);
+      paint.color = const Color(0xFF78958A).withValues(alpha: opacity);
       canvas.drawCircle(Offset(x, y), dot.radius, paint);
     }
   }

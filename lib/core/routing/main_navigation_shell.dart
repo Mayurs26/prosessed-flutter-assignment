@@ -8,10 +8,10 @@ import '../../features/cart/presentation/bloc/cart_state.dart';
 class MainNavigationShell extends StatelessWidget {
   const MainNavigationShell({required this.child, super.key});
 
-  static const Color _purple = Color(0xFF7957F5);
-  static const Color _lavender = Color(0xFFF0EAFF);
-  static const Color _background = Color(0xFFFEFCFF);
-  static const Color _border = Color(0xFFECE7F5);
+  static const Color _purple = Color(0xFF294B45);
+  static const Color _lavender = Color(0xFFE8EDE3);
+  static const Color _background = Color(0xFFF5F7F2);
+  static const Color _border = Color(0xFFDCE3D8);
 
   final Widget child;
 
@@ -46,7 +46,7 @@ class MainNavigationShell extends StatelessWidget {
                 Container(
                   width: 90,
                   decoration: const BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xFFFCFDF9),
                     border: Border(right: BorderSide(color: _border)),
                   ),
                   child: SafeArea(
@@ -107,7 +107,7 @@ class MainNavigationShell extends StatelessWidget {
           ? null
           : Container(
               decoration: const BoxDecoration(
-                color: Colors.white,
+                color: Color(0xFFFCFDF9),
                 border: Border(top: BorderSide(color: _border)),
                 boxShadow: [
                   BoxShadow(
@@ -181,9 +181,9 @@ class _BottomNavItem extends StatelessWidget {
   final int badgeCount;
   final VoidCallback onTap;
 
-  static const Color _purple = Color(0xFF7957F5);
-  static const Color _lavender = Color(0xFFF0EAFF);
-  static const Color _muted = Color(0xFF91899F);
+  static const Color _purple = Color(0xFF294B45);
+  static const Color _lavender = Color(0xFFE8EDE3);
+  static const Color _muted = Color(0xFF77827A);
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +214,7 @@ class _BottomNavItem extends StatelessWidget {
                     child: Badge(
                       isLabelVisible: badgeCount > 0,
                       label: Text(badgeCount > 99 ? '99+' : '$badgeCount'),
-                      backgroundColor: const Color(0xFFFF8066),
+                      backgroundColor: const Color(0xFFB9D96B),
                       textColor: Colors.white,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 180),
@@ -273,9 +273,9 @@ class _RailItem extends StatelessWidget {
   final int badgeCount;
   final VoidCallback onTap;
 
-  static const Color _purple = Color(0xFF7957F5);
-  static const Color _lavender = Color(0xFFF0EAFF);
-  static const Color _muted = Color(0xFF91899F);
+  static const Color _purple = Color(0xFF294B45);
+  static const Color _lavender = Color(0xFFE8EDE3);
+  static const Color _muted = Color(0xFF77827A);
 
   @override
   Widget build(BuildContext context) {
@@ -297,7 +297,7 @@ class _RailItem extends StatelessWidget {
               Badge(
                 isLabelVisible: badgeCount > 0,
                 label: Text(badgeCount > 99 ? '99+' : '$badgeCount'),
-                backgroundColor: const Color(0xFFFF8066),
+                backgroundColor: const Color(0xFFB9D96B),
                 textColor: Colors.white,
                 child: Icon(
                   selected ? selectedIcon : icon,

@@ -14,10 +14,10 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
   late final Animation<double> _scaleAnimation;
   late final Animation<double> _fadeAnimation;
 
-  static const Color primary = Color(0xFF6638F0);
-  static const Color background = Color(0xFFF8F6FF);
-  static const Color textPrimary = Color(0xFF17152F);
-  static const Color textSecondary = Color(0xFF77758D);
+  static const Color primary = Color(0xFF294B45);
+  static const Color background = Color(0xFFF5F7F2);
+  static const Color textPrimary = Color(0xFF172B2A);
+  static const Color textSecondary = Color(0xFF77827A);
 
   @override
   void initState() {
@@ -96,7 +96,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE8F8EF),
+                                color: const Color(0xFFE8F2DF),
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               child: const Row(
@@ -104,14 +104,14 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                 children: [
                                   Icon(
                                     Icons.check_circle_rounded,
-                                    color: Color(0xFF1C9958),
+                                    color: Color(0xFF365C37),
                                     size: 16,
                                   ),
                                   SizedBox(width: 7),
                                   Text(
                                     'ORDER CONFIRMED',
                                     style: TextStyle(
-                                      color: Color(0xFF16834A),
+                                      color: Color(0xFF365C37),
                                       fontSize: 11,
                                       fontWeight: FontWeight.w800,
                                       letterSpacing: 1,
@@ -154,7 +154,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(22),
                                 border: Border.all(
-                                  color: const Color(0xFFEAE5F7),
+                                  color: const Color(0xFFDCE3D8),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
@@ -194,7 +194,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                   ),
                                   Icon(
                                     Icons.favorite_rounded,
-                                    color: Color(0xFFE99BCB),
+                                    color: Color(0xFF78958A),
                                     size: 22,
                                   ),
                                 ],
@@ -268,7 +268,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFE7DEFF), Color(0xFFF6F2FF)],
+          colors: [Color(0xFFE8EDE3), Color(0xFFF0F3EC)],
         ),
         boxShadow: [
           BoxShadow(
@@ -295,7 +295,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
           ),
           child: const Icon(
             Icons.check_circle_rounded,
-            color: Color(0xFF28B86B),
+            color: Color(0xFF365C37),
             size: 83,
           ),
         ),
@@ -309,7 +309,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFFE3DAFF).withValues(alpha: 0.35),
+        color: const Color(0xFFDCE6D8).withValues(alpha: 0.35),
       ),
     );
   }
@@ -326,10 +326,10 @@ class _InfoIcon extends StatelessWidget {
       width: 46,
       height: 46,
       decoration: BoxDecoration(
-        color: const Color(0xFFF0ECFF),
+        color: const Color(0xFFE8EDE3),
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Icon(icon, color: const Color(0xFF6638F0), size: 23),
+      child: Icon(icon, color: const Color(0xFF294B45), size: 23),
     );
   }
 }

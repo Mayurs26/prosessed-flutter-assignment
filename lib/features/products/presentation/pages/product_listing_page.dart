@@ -74,9 +74,9 @@ class _ProductListingViewState extends State<_ProductListingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFEFDFF),
+      backgroundColor: const Color(0xFFF5F7F2),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFEFCFF),
+        backgroundColor: const Color(0xFFF5F7F2),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -90,7 +90,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
               width: 44,
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: const Color(0xFFF0EAFF),
+                color: const Color(0xFFE8EDE3),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Image.asset(
@@ -98,7 +98,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                 fit: BoxFit.contain,
                 errorBuilder: (_, _, _) => const Icon(
                   Icons.shopping_bag_rounded,
-                  color: Color(0xFF7957F5),
+                  color: Color(0xFF294B45),
                   size: 27,
                 ),
               ),
@@ -114,7 +114,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                       TextSpan(
                         text: 'Shop',
                         style: TextStyle(
-                          color: Color(0xFF151B38),
+                          color: Color(0xFF172B2A),
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.6,
@@ -123,7 +123,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                       TextSpan(
                         text: 'Sphere',
                         style: TextStyle(
-                          color: Color(0xFF5035FF),
+                          color: Color(0xFF294B45),
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.6,
@@ -136,7 +136,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                 Text(
                   'Find your everyday favourites',
                   style: TextStyle(
-                    color: Color(0xFF91899F),
+                    color: Color(0xFF77827A),
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
                   ),
@@ -152,8 +152,8 @@ class _ProductListingViewState extends State<_ProductListingView> {
                 tooltip: 'Shopping cart (${cartState.totalItems} items)',
                 onPressed: () => context.push('/cart'),
                 style: IconButton.styleFrom(
-                  backgroundColor: const Color(0xFFF2EDFF),
-                  foregroundColor: const Color(0xFF7957F5),
+                  backgroundColor: const Color(0xFFE8EDE3),
+                  foregroundColor: const Color(0xFF294B45),
                 ),
                 icon: Badge(
                   isLabelVisible: cartState.totalItems > 0,
@@ -178,7 +178,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                   padding: EdgeInsets.zero,
                   icon: CircleAvatar(
                     radius: 19,
-                    backgroundColor: const Color(0xFFECE8FF),
+                    backgroundColor: const Color(0xFFE8EDE3),
                     child: ClipOval(
                       child: imageUrl.isNotEmpty
                           ? Image.network(
@@ -188,12 +188,12 @@ class _ProductListingViewState extends State<_ProductListingView> {
                               fit: BoxFit.cover,
                               errorBuilder: (_, _, _) => const Icon(
                                 Icons.person_rounded,
-                                color: Color(0xFF7957F5),
+                                color: Color(0xFF294B45),
                               ),
                             )
                           : const Icon(
                               Icons.person_rounded,
-                              color: Color(0xFF7957F5),
+                              color: Color(0xFF294B45),
                             ),
                     ),
                   ),
@@ -220,13 +220,13 @@ class _ProductListingViewState extends State<_ProductListingView> {
               decoration: InputDecoration(
                 hintText: 'Search products, brands...',
                 hintStyle: const TextStyle(
-                  color: Color(0xFF9B93AA),
+                  color: Color(0xFF7E8980),
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
                 prefixIcon: const Icon(
                   Icons.search_rounded,
-                  color: Color(0xFF7957F5),
+                  color: Color(0xFF294B45),
                   size: 23,
                 ),
                 suffixIcon: AnimatedSwitcher(
@@ -245,7 +245,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                           },
                           icon: const Icon(
                             Icons.close_rounded,
-                            color: Color(0xFF858091),
+                            color: Color(0xFF77827A),
                             size: 20,
                           ),
                         ),
@@ -258,12 +258,12 @@ class _ProductListingViewState extends State<_ProductListingView> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(color: Color(0xFFECE7F5)),
+                  borderSide: const BorderSide(color: Color(0xFFDCE3D8)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
                   borderSide: const BorderSide(
-                    color: Color(0xFF9B83FF),
+                    color: Color(0xFF78958A),
                     width: 1.5,
                   ),
                 ),
@@ -303,16 +303,16 @@ class _ProductListingViewState extends State<_ProductListingView> {
                       labelStyle: TextStyle(
                         color: state.selectedCategorySlug == null
                             ? Colors.white
-                            : const Color(0xFF665C77),
+                            : const Color(0xFF52645B),
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                       ),
-                      selectedColor: const Color(0xFF7957F5),
+                      selectedColor: const Color(0xFF294B45),
                       backgroundColor: Colors.white,
                       side: BorderSide(
                         color: state.selectedCategorySlug == null
-                            ? const Color(0xFF7957F5)
-                            : const Color(0xFFECE7F5),
+                            ? const Color(0xFF294B45)
+                            : const Color(0xFFDCE3D8),
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
@@ -373,7 +373,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFECE7F5)),
+                          border: Border.all(color: const Color(0xFFDCE3D8)),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<ProductSortOption>(
@@ -381,10 +381,10 @@ class _ProductListingViewState extends State<_ProductListingView> {
                             value: state.sortOption,
                             icon: const Icon(
                               Icons.keyboard_arrow_down_rounded,
-                              color: Color(0xFF7957F5),
+                              color: Color(0xFF294B45),
                             ),
                             style: const TextStyle(
-                              color: Color(0xFF51465F),
+                              color: Color(0xFF35463F),
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
@@ -427,9 +427,9 @@ class _ProductListingViewState extends State<_ProductListingView> {
                     const SizedBox(width: 10),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF7957F5),
-                        backgroundColor: const Color(0xFFF5F1FF),
-                        side: const BorderSide(color: Color(0xFFE5DCFF)),
+                        foregroundColor: const Color(0xFF294B45),
+                        backgroundColor: const Color(0xFFEBF0E7),
+                        side: const BorderSide(color: Color(0xFFD3DDD0)),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 14,
@@ -473,7 +473,7 @@ class _ProductListingViewState extends State<_ProductListingView> {
                             Container(
                               padding: const EdgeInsets.all(5),
                               decoration: const BoxDecoration(
-                                color: Color(0xFF5035FF),
+                                color: Color(0xFF294B45),
                                 shape: BoxShape.circle,
                               ),
                               child: Text(
@@ -600,12 +600,12 @@ class _ProductCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(color: Color(0xFFECE7F5)),
+        side: const BorderSide(color: Color(0xFFDCE3D8)),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        splashColor: const Color(0xFF7957F5).withValues(alpha: 0.08),
-        highlightColor: const Color(0xFF7957F5).withValues(alpha: 0.04),
+        splashColor: const Color(0xFF294B45).withValues(alpha: 0.08),
+        highlightColor: const Color(0xFF294B45).withValues(alpha: 0.04),
         onTap: () {
           context.push('/product-details', extra: product);
         },
@@ -616,7 +616,7 @@ class _ProductCard extends StatelessWidget {
               flex: 6,
               child: Container(
                 width: double.infinity,
-                color: const Color(0xFFF6F4FF),
+                color: const Color(0xFFF0F3EC),
                 padding: const EdgeInsets.all(10),
                 child: Image.network(
                   product.thumbnail,
@@ -670,7 +670,7 @@ class _ProductCard extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  color: Color(0xFF5035FF),
+                                  color: Color(0xFF294B45),
                                   fontWeight: FontWeight.w800,
                                   fontSize: 16,
                                 ),
@@ -701,13 +701,13 @@ class _ProductCard extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE7F7EC),
+                              color: const Color(0xFFE8F2DF),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               '${product.discountPercentage.toStringAsFixed(0)}% OFF',
                               style: const TextStyle(
-                                color: Color(0xFF18743A),
+                                color: Color(0xFF365C37),
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -861,7 +861,7 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
         maxHeight: MediaQuery.sizeOf(context).height * 0.88,
       ),
       decoration: const BoxDecoration(
-        color: Color(0xFFFEFDFF),
+        color: Color(0xFFF5F7F2),
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Padding(
@@ -878,7 +878,7 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
                     width: 42,
                     height: 5,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFD8D4E5),
+                      color: const Color(0xFFD5DDD2),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
@@ -891,12 +891,12 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
                       width: 46,
                       height: 46,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEDE8FF),
+                        color: const Color(0xFFE8EDE3),
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: const Icon(
                         Icons.tune_rounded,
-                        color: Color(0xFF5035FF),
+                        color: Color(0xFF294B45),
                         size: 25,
                       ),
                     ),
@@ -910,14 +910,14 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
                             style: TextStyle(
                               fontSize: 23,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF211B35),
+                              color: Color(0xFF172B2A),
                             ),
                           ),
                           SizedBox(height: 3),
                           Text(
                             'Find products that fit your needs',
                             style: TextStyle(
-                              color: Color(0xFF777287),
+                              color: Color(0xFF77827A),
                               fontSize: 13,
                             ),
                           ),
@@ -941,7 +941,7 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
                 const SizedBox(height: 6),
                 const Text(
                   'Enter your preferred minimum and maximum price.',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF777287)),
+                  style: TextStyle(fontSize: 12, color: Color(0xFF77827A)),
                 ),
                 const SizedBox(height: 14),
 
@@ -983,7 +983,7 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
                 const SizedBox(height: 6),
                 const Text(
                   'Choose the minimum customer rating.',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF777287)),
+                  style: TextStyle(fontSize: 12, color: Color(0xFF77827A)),
                 ),
                 const SizedBox(height: 14),
 
@@ -1007,7 +1007,7 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
                         onPressed: _resetFilters,
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 52),
-                          foregroundColor: const Color(0xFF5035FF),
+                          foregroundColor: const Color(0xFF294B45),
                           side: const BorderSide(color: Color(0xFFDCD5FF)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -1025,7 +1025,7 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
                       child: FilledButton.icon(
                         onPressed: _applyFilters,
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFF5035FF),
+                          backgroundColor: const Color(0xFF294B45),
                           foregroundColor: Colors.white,
                           minimumSize: const Size(0, 52),
                           shape: RoundedRectangleBorder(
@@ -1067,7 +1067,7 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
         labelText: label,
         prefixText: '\$ ',
         filled: true,
-        fillColor: const Color(0xFFF6F4FF),
+        fillColor: const Color(0xFFF0F3EC),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 16,
@@ -1092,10 +1092,10 @@ class _ProductFilterSheetState extends State<_ProductFilterSheet> {
         color: selected ? Colors.white : const Color(0xFF514A66),
         fontWeight: FontWeight.w600,
       ),
-      selectedColor: const Color(0xFF5035FF),
-      backgroundColor: const Color(0xFFF3F1FF),
+      selectedColor: const Color(0xFF294B45),
+      backgroundColor: const Color(0xFFEBF0E7),
       side: BorderSide(
-        color: selected ? const Color(0xFF5035FF) : const Color(0xFFE5E0F0),
+        color: selected ? const Color(0xFF294B45) : const Color(0xFFDCE3D8),
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       onSelected: (_) {

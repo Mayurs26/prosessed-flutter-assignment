@@ -20,11 +20,11 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _obscurePassword = true;
 
-  static const _purple = Color(0xFF5035FF);
-  static const _lavender = Color(0xFF8A5CFF);
-  static const _ink = Color(0xFF111936);
-  static const _muted = Color(0xFF697592);
-  static const _border = Color(0xFFE6E8FA);
+  static const _purple = Color(0xFF294B45);
+  static const _lavender = Color(0xFF86A85B);
+  static const _ink = Color(0xFF172B2A);
+  static const _muted = Color(0xFF77827A);
+  static const _border = Color(0xFFDCE3D8);
 
   @override
   void dispose() {
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFEFDFF),
+      backgroundColor: const Color(0xFFF5F7F2),
       body: Stack(
         children: [
           const Positioned(
@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
               _buildBranding(context, isWide: false),
               const SizedBox(height: 42),
               Text(
-                'Welcome Back',
+                'Welcome back',
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontSize: 36,
                   fontWeight: FontWeight.w800,
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Sign in to continue shopping on ShopSphere',
+                'Sign in to pick up where your shopping left off',
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: _muted,
                   height: 1.4,
@@ -189,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                       _buildBranding(context, isWide: true),
                       const SizedBox(height: 28),
                       Text(
-                        'Discover. Shop. Your Way.',
+                        'Thoughtful finds. Effortless shopping.',
                         style: theme.textTheme.headlineSmall?.copyWith(
                           color: _muted,
                         ),
@@ -204,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Welcome Back',
+                      'Welcome back',
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: _ink,
@@ -212,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Sign in to continue shopping on ShopSphere',
+                      'Sign in to pick up where your shopping left off',
                       style: TextStyle(color: _muted),
                     ),
                     const SizedBox(height: 28),
@@ -332,7 +332,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!isWide) const SizedBox(height: 0),
         if (!isWide)
           const Text(
-            'Discover. Shop. Your Way.',
+            'Thoughtful finds. Effortless shopping.',
             style: TextStyle(color: _muted, fontSize: 13, height: 1.0),
           ),
       ],
@@ -426,7 +426,7 @@ class _LoginPageState extends State<LoginPage> {
       hintText: hint,
       prefixIcon: Icon(icon, color: _muted, size: 25),
       filled: true,
-      fillColor: const Color(0xFFF7F7FD),
+      fillColor: const Color(0xFFEEF2EA),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 23),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(19),
@@ -525,7 +525,7 @@ class _BackgroundCircle extends StatelessWidget {
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [Color(0xFFEAE6FF), Color(0x00EAE6FF)],
+            colors: [Color(0xFFDDE8D4), Color(0x00DDE8D4)],
           ),
         ),
       ),

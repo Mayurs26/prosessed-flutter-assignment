@@ -15,9 +15,9 @@ import '../bloc/checkout_state.dart';
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
-  static const Color _purple = Color(0xFF7957F5);
-  static const Color _deepPurple = Color(0xFF7957F5);
-  static const Color _background = Color(0xFFFAFAFD);
+  static const Color _purple = Color(0xFF294B45);
+  static const Color _deepPurple = Color(0xFF294B45);
+  static const Color _background = Color(0xFFF5F7F2);
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +75,9 @@ class CartPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [
-                                Color(0xFF8B6CF6),
-                                Color(0xFF7957F5),
-                                Color(0xFFA58BFF),
+                                Color(0xFF294B45),
+                                Color(0xFF294B45),
+                                Color(0xFF78958A),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -227,14 +227,14 @@ class _EmptyCart extends StatelessWidget {
               height: 150,
               width: 150,
               decoration: BoxDecoration(
-                color: const Color(0xFFECE8FF),
+                color: const Color(0xFFE8EDE3),
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFDCD4FF)),
+                border: Border.all(color: const Color(0xFFD3DDD0)),
               ),
               child: const Icon(
                 Icons.shopping_cart_outlined,
                 size: 68,
-                color: Color(0xFF5035FF),
+                color: Color(0xFF294B45),
               ),
             ),
             const SizedBox(height: 28),
@@ -242,7 +242,7 @@ class _EmptyCart extends StatelessWidget {
               'Your cart is waiting',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xFF21165C),
+                color: Color(0xFF172B2A),
                 fontSize: 25,
                 fontWeight: FontWeight.w900,
               ),
@@ -253,7 +253,7 @@ class _EmptyCart extends StatelessWidget {
               'Explore our collection and find something you love.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xFF858197),
+                color: Color(0xFF77827A),
                 height: 1.6,
                 fontSize: 14,
               ),
@@ -267,7 +267,7 @@ class _EmptyCart extends StatelessWidget {
                 icon: const Icon(Icons.shopping_bag_outlined),
                 label: const Text('Continue Shopping'),
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B6CF6),
+                  backgroundColor: const Color(0xFF294B45),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(17),
@@ -315,10 +315,10 @@ class _CartItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFECE9F7)),
+        border: Border.all(color: const Color(0xFFDCE3D8)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF21165C).withValues(alpha: 0.035),
+            color: const Color(0xFF172B2A).withValues(alpha: 0.035),
             blurRadius: 16,
             offset: const Offset(0, 5),
           ),
@@ -332,7 +332,7 @@ class _CartItemCard extends StatelessWidget {
             height: 112,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F3FF),
+              color: const Color(0xFFF0F3EC),
               borderRadius: BorderRadius.circular(17),
             ),
             child: ClipRRect(
@@ -343,7 +343,7 @@ class _CartItemCard extends StatelessWidget {
                 errorBuilder: (_, _, _) => const Icon(
                   Icons.image_not_supported_outlined,
                   size: 34,
-                  color: Color(0xFF9B93B9),
+                  color: Color(0xFF77827A),
                 ),
               ),
             ),
@@ -365,7 +365,7 @@ class _CartItemCard extends StatelessWidget {
                           fontSize: 14,
                           height: 1.4,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF292442),
+                          color: Color(0xFF263A33),
                         ),
                       ),
                     ),
@@ -390,7 +390,7 @@ class _CartItemCard extends StatelessWidget {
                 Text(
                   '\$${price.toStringAsFixed(2)}',
                   style: const TextStyle(
-                    color: Color(0xFF5035FF),
+                    color: Color(0xFF294B45),
                     fontWeight: FontWeight.w900,
                     fontSize: 17,
                   ),
@@ -409,7 +409,7 @@ class _CartItemCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF21165C),
+                          color: Color(0xFF172B2A),
                         ),
                       ),
                     ),
@@ -424,7 +424,7 @@ class _CartItemCard extends StatelessWidget {
                         child: Icon(
                           Icons.inventory_2_outlined,
                           size: 17,
-                          color: Color(0xFF858197),
+                          color: Color(0xFF77827A),
                         ),
                       ),
                   ],
@@ -456,10 +456,10 @@ class _QuantityButton extends StatelessWidget {
             ? 'Increase quantity'
             : 'Decrease quantity',
         style: IconButton.styleFrom(
-          backgroundColor: const Color(0xFFECE8FF),
-          foregroundColor: const Color(0xFF5035FF),
-          disabledBackgroundColor: const Color(0xFFF0EEF5),
-          disabledForegroundColor: const Color(0xFFB8B4C7),
+          backgroundColor: const Color(0xFFE8EDE3),
+          foregroundColor: const Color(0xFF294B45),
+          disabledBackgroundColor: const Color(0xFFE8EDE3),
+          disabledForegroundColor: const Color(0xFFA3AEA4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -491,7 +491,7 @@ class _CartSummary extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF21165C).withValues(alpha: 0.08),
+            color: const Color(0xFF172B2A).withValues(alpha: 0.08),
             blurRadius: 24,
             offset: const Offset(0, -5),
           ),
@@ -509,7 +509,7 @@ class _CartSummary extends StatelessWidget {
                 width: 42,
                 margin: const EdgeInsets.only(bottom: 18),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE7E3F2),
+                  color: const Color(0xFFDCE3D8),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -518,11 +518,11 @@ class _CartSummary extends StatelessWidget {
               _SummaryRow(
                 label: 'You save',
                 value: -discount,
-                valueColor: const Color(0xFF198754),
+                valueColor: const Color(0xFF365C37),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 14),
-                child: Divider(color: Color(0xFFECE9F7), height: 1),
+                child: Divider(color: Color(0xFFDCE3D8), height: 1),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -533,7 +533,7 @@ class _CartSummary extends StatelessWidget {
                       Text(
                         'Grand total',
                         style: TextStyle(
-                          color: Color(0xFF858197),
+                          color: Color(0xFF77827A),
                           fontSize: 12,
                         ),
                       ),
@@ -541,7 +541,7 @@ class _CartSummary extends StatelessWidget {
                       Text(
                         'Total to pay',
                         style: TextStyle(
-                          color: Color(0xFF21165C),
+                          color: Color(0xFF172B2A),
                           fontSize: 17,
                           fontWeight: FontWeight.w900,
                         ),
@@ -551,7 +551,7 @@ class _CartSummary extends StatelessWidget {
                   Text(
                     '\$${total.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      color: Color(0xFF5035FF),
+                      color: Color(0xFF294B45),
                       fontSize: 26,
                       fontWeight: FontWeight.w900,
                     ),
@@ -569,9 +569,9 @@ class _CartSummary extends StatelessWidget {
                     child: FilledButton(
                       onPressed: isLoading ? null : onCheckout,
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF8B6CF6),
+                        backgroundColor: const Color(0xFF294B45),
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: const Color(0xFFBDB3FF),
+                        disabledBackgroundColor: const Color(0xFFB6C6B8),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(17),
                         ),
@@ -630,7 +630,7 @@ class _SummaryRow extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            color: Color(0xFF858197),
+            color: Color(0xFF77827A),
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
@@ -638,7 +638,7 @@ class _SummaryRow extends StatelessWidget {
         Text(
           '${value < 0 ? '-\$' : '\$'}${value.abs().toStringAsFixed(2)}',
           style: TextStyle(
-            color: valueColor ?? const Color(0xFF292442),
+            color: valueColor ?? const Color(0xFF263A33),
             fontSize: 14,
             fontWeight: FontWeight.w800,
           ),
