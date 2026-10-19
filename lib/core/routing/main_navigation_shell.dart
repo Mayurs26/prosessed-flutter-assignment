@@ -8,11 +8,6 @@ import '../../features/cart/presentation/bloc/cart_state.dart';
 class MainNavigationShell extends StatelessWidget {
   const MainNavigationShell({required this.child, super.key});
 
-  static const Color _purple = Color(0xFF294B45);
-  static const Color _lavender = Color(0xFFE8EDE3);
-  static const Color _background = Color(0xFFF5F7F2);
-  static const Color _border = Color(0xFFDCE3D8);
-
   final Widget child;
 
   int _selectedIndex(String location) {
@@ -34,20 +29,23 @@ class MainNavigationShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     final location = GoRouterState.of(context).uri.path;
     final selectedIndex = _selectedIndex(location);
     final isWide = MediaQuery.sizeOf(context).width >= 600;
 
     return Scaffold(
-      backgroundColor: _background,
+      backgroundColor: colors.surface,
       body: isWide
           ? Row(
               children: [
                 Container(
                   width: 90,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFCFDF9),
-                    border: Border(right: BorderSide(color: _border)),
+                  decoration: BoxDecoration(
+                    color: colors.surfaceContainer,
+                    border: Border(
+                      right: BorderSide(color: colors.outlineVariant),
+                    ),
                   ),
                   child: SafeArea(
                     child: Column(
@@ -57,13 +55,16 @@ class MainNavigationShell extends StatelessWidget {
                           width: 46,
                           height: 46,
                           decoration: BoxDecoration(
-                            color: _lavender,
+                            color: colors.primaryContainer,
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: const Icon(
-                            Icons.shopping_bag_rounded,
-                            color: _purple,
-                            size: 25,
+                          padding: const EdgeInsets.all(5),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(11),
+                            child: Image.asset(
+                              'assets/images/logo_bag.png',
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -106,9 +107,9 @@ class MainNavigationShell extends StatelessWidget {
       bottomNavigationBar: isWide
           ? null
           : Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFFCFDF9),
-                border: Border(top: BorderSide(color: _border)),
+              decoration: BoxDecoration(
+                color: colors.surfaceContainer,
+                border: Border(top: BorderSide(color: colors.outlineVariant)),
                 boxShadow: [
                   BoxShadow(
                     color: Color(0x0A30204D),
@@ -181,12 +182,9 @@ class _BottomNavItem extends StatelessWidget {
   final int badgeCount;
   final VoidCallback onTap;
 
-  static const Color _purple = Color(0xFF294B45);
-  static const Color _lavender = Color(0xFFE8EDE3);
-  static const Color _muted = Color(0xFF77827A);
-
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Semantics(
       button: true,
       selected: selected,
@@ -207,15 +205,17 @@ class _BottomNavItem extends StatelessWidget {
                   height: 36,
                   width: selected ? 66 : 52,
                   decoration: BoxDecoration(
-                    color: selected ? _lavender : Colors.transparent,
+                    color: selected
+                        ? colors.primaryContainer
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Center(
                     child: Badge(
                       isLabelVisible: badgeCount > 0,
                       label: Text(badgeCount > 99 ? '99+' : '$badgeCount'),
-                      backgroundColor: const Color(0xFFB9D96B),
-                      textColor: Colors.white,
+                      backgroundColor: colors.tertiary,
+                      textColor: colors.onTertiary,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 180),
                         transitionBuilder: (child, animation) {
@@ -231,7 +231,9 @@ class _BottomNavItem extends StatelessWidget {
                           selected ? selectedIcon : icon,
                           key: ValueKey(selected),
                           size: 23,
-                          color: selected ? _purple : _muted,
+                          color: selected
+                              ? colors.onPrimaryContainer
+                              : colors.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -241,7 +243,7 @@ class _BottomNavItem extends StatelessWidget {
                 AnimatedDefaultTextStyle(
                   duration: const Duration(milliseconds: 180),
                   style: TextStyle(
-                    color: selected ? _purple : _muted,
+                    color: selected ? colors.primary : colors.onSurfaceVariant,
                     fontSize: 11,
                     fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
                   ),
@@ -273,12 +275,9 @@ class _RailItem extends StatelessWidget {
   final int badgeCount;
   final VoidCallback onTap;
 
-  static const Color _purple = Color(0xFF294B45);
-  static const Color _lavender = Color(0xFFE8EDE3);
-  static const Color _muted = Color(0xFF77827A);
-
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Tooltip(
       message: label,
       child: InkWell(
@@ -288,7 +287,8 @@ class _RailItem extends StatelessWidget {
           width: 76,
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: selected ? _lavender : Colors.transparent,
+            // Selected item background
+            color: selected ? colors.primaryContainer : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -297,11 +297,14 @@ class _RailItem extends StatelessWidget {
               Badge(
                 isLabelVisible: badgeCount > 0,
                 label: Text(badgeCount > 99 ? '99+' : '$badgeCount'),
-                backgroundColor: const Color(0xFFB9D96B),
-                textColor: Colors.white,
+                backgroundColor: colors.tertiary,
+                textColor: colors.onTertiary,
                 child: Icon(
                   selected ? selectedIcon : icon,
-                  color: selected ? _purple : _muted,
+                  // Icon color
+                  color: selected
+                      ? colors.onPrimaryContainer
+                      : colors.onSurfaceVariant,
                   size: 24,
                 ),
               ),
@@ -309,7 +312,8 @@ class _RailItem extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  color: selected ? _purple : _muted,
+                  // Label color
+                  color: selected ? colors.primary : colors.onSurfaceVariant,
                   fontSize: 11,
                   fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
                 ),

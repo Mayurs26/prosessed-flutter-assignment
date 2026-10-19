@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/theme/theme_controller.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  static const Color _forest = Color(0xFF294B45);
-  static const Color _ink = Color(0xFF172B2A);
-  static const Color _sage = Color(0xFFE8EDE3);
-  static const Color _canvas = Color(0xFFF5F7F2);
-  static const Color _muted = Color(0xFF77827A);
-  static const Color _line = Color(0xFFDCE3D8);
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +33,13 @@ class ProfilePage extends StatelessWidget {
         if (state is! AuthSuccess) {
           final failed = state is AuthFailure;
           return Scaffold(
-            backgroundColor: _canvas,
+            backgroundColor: colors.surface,
             appBar: AppBar(
               title: const Text(
                 'My profile',
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
-              backgroundColor: _canvas,
+              backgroundColor: colors.surface,
               surfaceTintColor: Colors.transparent,
             ),
             body: Center(
@@ -57,8 +51,8 @@ class ProfilePage extends StatelessWidget {
                     Container(
                       height: 84,
                       width: 84,
-                      decoration: const BoxDecoration(
-                        color: _sage,
+                      decoration: BoxDecoration(
+                        color: colors.surfaceContainer,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -66,9 +60,10 @@ class ProfilePage extends StatelessWidget {
                             ? Icons.person_off_outlined
                             : Icons.person_outline_rounded,
                         size: 40,
-                        color: _forest,
+                        color: colors.primary,
                       ),
                     ),
+
                     const SizedBox(height: 20),
                     Text(
                       failed
@@ -76,7 +71,7 @@ class ProfilePage extends StatelessWidget {
                           : 'Getting your profile ready',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.titleLarge?.copyWith(
-                        color: _ink,
+                        color: colors.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -87,7 +82,7 @@ class ProfilePage extends StatelessWidget {
                           : 'Just a moment while we load your account details.',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: _muted,
+                        color: colors.onSurfaceVariant,
                         height: 1.5,
                       ),
                     ),
@@ -99,7 +94,7 @@ class ProfilePage extends StatelessWidget {
                         label: const Text('Go to Login'),
                       )
                     else
-                      const CircularProgressIndicator(color: _forest),
+                      CircularProgressIndicator(color: colors.primary),
                   ],
                 ),
               ),
@@ -108,13 +103,26 @@ class ProfilePage extends StatelessWidget {
         }
 
         final session = state.session;
+        final isDarkTheme = theme.brightness == Brightness.dark;
+        final profileCardColor = isDarkTheme
+            ? const Color.fromARGB(255, 93, 78, 179)
+            : colors.primary;
+        final profileCardTextColor = isDarkTheme
+            ? Colors.white
+            : colors.onPrimary;
+        final profileCardSecondaryColor = isDarkTheme
+            ? const Color(0xFFE8E2FF)
+            : const Color(0xFFD5E7A4);
+        final profileCardDescriptionColor = isDarkTheme
+            ? const Color(0xFFF3F0FF)
+            : const Color(0xFFE0E8DF);
         final displayName = session.fullName.trim().isNotEmpty
             ? session.fullName.trim()
             : session.username;
         final loggingOut = state is AuthLoggingOut;
 
         return Scaffold(
-          backgroundColor: _canvas,
+          backgroundColor: colors.surface,
           body: SafeArea(
             child: CustomScrollView(
               slivers: [
@@ -127,24 +135,24 @@ class ProfilePage extends StatelessWidget {
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
-                            color: _forest,
+                            color: colors.primary,
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.person_pin_rounded,
-                            color: Colors.white,
+                            color: colors.onPrimary,
                             size: 24,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'MY PROFILE',
                                 style: TextStyle(
-                                  color: _ink,
+                                  color: colors.onSurface,
                                   fontSize: 17,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: .3,
@@ -153,7 +161,10 @@ class ProfilePage extends StatelessWidget {
                               SizedBox(height: 3),
                               Text(
                                 'Your personal space',
-                                style: TextStyle(color: _muted, fontSize: 12),
+                                style: TextStyle(
+                                  color: colors.onSurfaceVariant,
+                                  fontSize: 12,
+                                ),
                               ),
                             ],
                           ),
@@ -164,9 +175,9 @@ class ProfilePage extends StatelessWidget {
                               ? null
                               : () => _confirmLogout(context),
                           style: IconButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: _forest,
-                            side: const BorderSide(color: _line),
+                            backgroundColor: colors.surfaceContainerLow,
+                            foregroundColor: colors.primary,
+                            side: BorderSide(color: colors.outlineVariant),
                           ),
                           icon: const Icon(Icons.logout_rounded),
                         ),
@@ -182,11 +193,11 @@ class ProfilePage extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: _forest,
+                          color: profileCardColor,
                           borderRadius: BorderRadius.circular(28),
                           boxShadow: [
                             BoxShadow(
-                              color: _forest.withValues(alpha: .14),
+                              color: colors.shadow.withValues(alpha: .14),
                               blurRadius: 24,
                               offset: const Offset(0, 10),
                             ),
@@ -201,15 +212,19 @@ class ProfilePage extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: .15),
+                                    color: colors.onPrimary.withValues(
+                                      alpha: .15,
+                                    ),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.white.withValues(alpha: .3),
+                                      color: colors.onPrimary.withValues(
+                                        alpha: .3,
+                                      ),
                                     ),
                                   ),
                                   child: CircleAvatar(
                                     radius: 35,
-                                    backgroundColor: _sage,
+                                    backgroundColor: colors.primaryContainer,
                                     child: ClipOval(
                                       child: session.image.isNotEmpty
                                           ? Image.network(
@@ -217,16 +232,15 @@ class ProfilePage extends StatelessWidget {
                                               width: 70,
                                               height: 70,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (_, _, _) =>
-                                                  const Icon(
-                                                    Icons.person_rounded,
-                                                    color: _forest,
-                                                    size: 35,
-                                                  ),
+                                              errorBuilder: (_, _, _) => Icon(
+                                                Icons.person_rounded,
+                                                color: colors.primary,
+                                                size: 35,
+                                              ),
                                             )
-                                          : const Icon(
+                                          : Icon(
                                               Icons.person_rounded,
-                                              color: _forest,
+                                              color: colors.primary,
                                               size: 35,
                                             ),
                                     ),
@@ -239,22 +253,22 @@ class ProfilePage extends StatelessWidget {
                                     vertical: 7,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFD5E7A4),
+                                    color: colors.tertiaryContainer,
                                     borderRadius: BorderRadius.circular(30),
                                   ),
-                                  child: const Row(
+                                  child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
                                         Icons.verified_rounded,
                                         size: 14,
-                                        color: _forest,
+                                        color: colors.primary,
                                       ),
                                       SizedBox(width: 5),
                                       Text(
                                         'ACCOUNT',
                                         style: TextStyle(
-                                          color: _forest,
+                                          color: colors.primary,
                                           fontSize: 10,
                                           fontWeight: FontWeight.w900,
                                           letterSpacing: .8,
@@ -266,10 +280,12 @@ class ProfilePage extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 22),
-                            const Text(
+                            Text(
                               'WELCOME BACK',
                               style: TextStyle(
-                                color: Color(0xFFC9D7CB),
+                                color: isDarkTheme
+                                    ? const Color(0xFFE8E2FF)
+                                    : const Color(0xFFC9D7CB),
                                 fontSize: 10,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 2,
@@ -280,8 +296,8 @@ class ProfilePage extends StatelessWidget {
                               displayName,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: profileCardTextColor,
                                 fontSize: 26,
                                 height: 1.15,
                                 fontWeight: FontWeight.w900,
@@ -290,8 +306,8 @@ class ProfilePage extends StatelessWidget {
                             const SizedBox(height: 8),
                             Text(
                               '@${session.username}',
-                              style: const TextStyle(
-                                color: Color(0xFFD5E7A4),
+                              style: TextStyle(
+                                color: profileCardSecondaryColor,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -299,22 +315,22 @@ class ProfilePage extends StatelessWidget {
                             const SizedBox(height: 20),
                             Container(
                               height: 1,
-                              color: Colors.white.withValues(alpha: .17),
+                              color: colors.onPrimary.withValues(alpha: .17),
                             ),
                             const SizedBox(height: 14),
-                            const Row(
+                            Row(
                               children: [
                                 Icon(
                                   Icons.shield_outlined,
-                                  color: Color(0xFFD5E7A4),
+                                  color: profileCardSecondaryColor,
                                   size: 17,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     'Your account details are ready whenever you need them.',
                                     style: TextStyle(
-                                      color: Color(0xFFE0E8DF),
+                                      color: profileCardDescriptionColor,
                                       fontSize: 12,
                                       height: 1.4,
                                     ),
@@ -329,14 +345,14 @@ class ProfilePage extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   'Personal details',
                                   style: TextStyle(
-                                    color: _ink,
+                                    color: colors.onSurface,
                                     fontSize: 21,
                                     fontWeight: FontWeight.w900,
                                   ),
@@ -344,7 +360,10 @@ class ProfilePage extends StatelessWidget {
                                 SizedBox(height: 5),
                                 Text(
                                   'Information linked to your account',
-                                  style: TextStyle(color: _muted, fontSize: 12),
+                                  style: TextStyle(
+                                    color: colors.onSurfaceVariant,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -352,12 +371,12 @@ class ProfilePage extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(9),
                             decoration: BoxDecoration(
-                              color: _sage,
+                              color: colors.surfaceContainer,
                               borderRadius: BorderRadius.circular(13),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.tune_rounded,
-                              color: _forest,
+                              color: colors.primary,
                               size: 19,
                             ),
                           ),
@@ -370,7 +389,7 @@ class ProfilePage extends StatelessWidget {
                         value: session.email.isNotEmpty
                             ? session.email
                             : 'Not provided',
-                        iconBg: const Color(0xFFE5EDE0),
+                        iconBg: colors.surfaceContainer,
                       ),
                       _DetailCard(
                         icon: Icons.call_outlined,
@@ -378,21 +397,78 @@ class ProfilePage extends StatelessWidget {
                         value: session.phone?.isNotEmpty == true
                             ? session.phone!
                             : 'Not provided',
-                        iconBg: const Color(0xFFE8EFE8),
+                        iconBg: colors.surfaceContainerHigh,
                       ),
                       _DetailCard(
                         icon: Icons.fingerprint_rounded,
                         label: 'USER ID',
                         value: session.id.toString(),
-                        iconBg: const Color(0xFFF0F1E5),
+                        iconBg: colors.primaryContainer,
                       ),
+                      const SizedBox(height: 20),
+
+                      Builder(
+                        builder: (context) {
+                          final controller = ThemeControllerScope.of(context);
+                          final isDark = controller.themeMode == ThemeMode.dark;
+                          final colors = Theme.of(context).colorScheme;
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: colors.surface,
+                              borderRadius: BorderRadius.circular(22),
+                              border: Border.all(color: colors.outlineVariant),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(22),
+                              clipBehavior: Clip.antiAlias,
+                              child: SwitchListTile(
+                                contentPadding: EdgeInsets.zero,
+                                secondary: Icon(
+                                  isDark
+                                      ? Icons.dark_mode_rounded
+                                      : Icons.light_mode_rounded,
+                                  color: colors.primary,
+                                ),
+                                title: Text(
+                                  'Dark mode',
+                                  style: TextStyle(
+                                    color: colors.onSurface,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  isDark
+                                      ? 'Dark appearance enabled'
+                                      : 'Light appearance enabled',
+                                  style: TextStyle(
+                                    color: colors.onSurfaceVariant,
+                                  ),
+                                ),
+                                value: isDark,
+                                onChanged: (enabled) {
+                                  controller.setThemeMode(
+                                    enabled ? ThemeMode.dark : ThemeMode.light,
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
                       const SizedBox(height: 20),
                       Container(
                         padding: const EdgeInsets.all(17),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE8EDE3),
+                          color: colors.surfaceContainer,
                           borderRadius: BorderRadius.circular(22),
-                          border: Border.all(color: _line),
+                          border: Border.all(color: colors.outlineVariant),
                         ),
                         child: Row(
                           children: [
@@ -400,23 +476,23 @@ class ProfilePage extends StatelessWidget {
                               width: 44,
                               height: 44,
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: colors.surfaceContainerLow,
                                 borderRadius: BorderRadius.circular(14),
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.lock_outline_rounded,
-                                color: _forest,
+                                color: colors.primary,
                               ),
                             ),
                             const SizedBox(width: 13),
-                            const Expanded(
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     'Signed in securely',
                                     style: TextStyle(
-                                      color: _ink,
+                                      color: colors.onSurface,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w800,
                                     ),
@@ -425,7 +501,7 @@ class ProfilePage extends StatelessWidget {
                                   Text(
                                     'Your session is active on this device.',
                                     style: TextStyle(
-                                      color: _muted,
+                                      color: colors.onSurfaceVariant,
                                       fontSize: 12,
                                       height: 1.4,
                                     ),
@@ -433,9 +509,9 @@ class ProfilePage extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            const Icon(
+                            Icon(
                               Icons.check_circle_rounded,
-                              color: _forest,
+                              color: colors.primary,
                               size: 21,
                             ),
                           ],
@@ -464,7 +540,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: colors.error,
-                            backgroundColor: Colors.white,
+                            backgroundColor: colors.surfaceContainerLow,
                             side: BorderSide(
                               color: colors.error.withValues(alpha: .35),
                             ),
@@ -479,11 +555,11 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Center(
+                      Center(
                         child: Text(
                           'SHOP SMART. LIVE BETTER.',
                           style: TextStyle(
-                            color: _muted,
+                            color: colors.onSurfaceVariant,
                             fontSize: 10,
                             letterSpacing: 2,
                             fontWeight: FontWeight.w800,
@@ -502,17 +578,25 @@ class ProfilePage extends StatelessWidget {
   }
 
   Future<void> _confirmLogout(BuildContext context) async {
+    final colors = Theme.of(context).colorScheme;
+
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: _canvas,
+        backgroundColor: colors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        icon: const Icon(Icons.logout_rounded, color: _forest, size: 32),
-        title: const Text(
+        icon: Icon(Icons.logout_rounded, color: colors.primary, size: 32),
+        title: Text(
           'Log out?',
-          style: TextStyle(color: _ink, fontWeight: FontWeight.w900),
+          style: TextStyle(
+            color: colors.onSurface,
+            fontWeight: FontWeight.w900,
+          ),
         ),
-        content: const Text('Are you sure you want to log out of ShopSphere?'),
+        content: Text(
+          'Are you sure you want to log out of ShopSphere?',
+          style: TextStyle(color: colors.onSurfaceVariant),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -521,8 +605,8 @@ class ProfilePage extends StatelessWidget {
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF294B45),
-              foregroundColor: Colors.white,
+              backgroundColor: colors.primary,
+              foregroundColor: colors.onPrimary,
             ),
             child: const Text('Log out'),
           ),
@@ -550,13 +634,15 @@ class _DetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 11),
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.surfaceContainerLow,
         borderRadius: BorderRadius.circular(19),
-        border: Border.all(color: const Color(0xFFDCE3D8)),
+        border: Border.all(color: colors.outlineVariant),
       ),
       child: Row(
         children: [
@@ -567,7 +653,7 @@ class _DetailCard extends StatelessWidget {
               color: iconBg,
               borderRadius: BorderRadius.circular(15),
             ),
-            child: Icon(icon, color: const Color(0xFF294B45), size: 21),
+            child: Icon(icon, color: colors.primary, size: 21),
           ),
           const SizedBox(width: 13),
           Expanded(
@@ -576,8 +662,8 @@ class _DetailCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: Color(0xFF77827A),
+                  style: TextStyle(
+                    color: colors.onSurfaceVariant,
                     fontSize: 10,
                     letterSpacing: .8,
                     fontWeight: FontWeight.w800,
@@ -586,8 +672,8 @@ class _DetailCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 SelectableText(
                   value,
-                  style: const TextStyle(
-                    color: Color(0xFF172B2A),
+                  style: TextStyle(
+                    color: colors.onSurface,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
@@ -595,9 +681,9 @@ class _DetailCard extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(
+          Icon(
             Icons.chevron_right_rounded,
-            color: Color(0xFF9AA69B),
+            color: colors.onSurfaceVariant,
             size: 20,
           ),
         ],

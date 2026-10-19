@@ -14,11 +14,6 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
   late final Animation<double> _scaleAnimation;
   late final Animation<double> _fadeAnimation;
 
-  static const Color primary = Color(0xFF294B45);
-  static const Color background = Color(0xFFF5F7F2);
-  static const Color textPrimary = Color(0xFF172B2A);
-  static const Color textSecondary = Color(0xFF77827A);
-
   @override
   void initState() {
     super.initState();
@@ -46,18 +41,20 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: background,
+      backgroundColor: colors.surface,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: background,
+        backgroundColor: colors.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Order Confirmation',
           style: TextStyle(
-            color: textPrimary,
+            color: colors.onSurface,
             fontSize: 19,
             fontWeight: FontWeight.w800,
           ),
@@ -68,11 +65,15 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
           builder: (context, constraints) {
             return Stack(
               children: [
-                Positioned(top: -50, right: -65, child: _decorationCircle(190)),
+                Positioned(
+                  top: -50,
+                  right: -65,
+                  child: _decorationCircle(context, 190),
+                ),
                 Positioned(
                   bottom: 20,
                   left: -75,
-                  child: _decorationCircle(180),
+                  child: _decorationCircle(context, 180),
                 ),
                 Center(
                   child: SingleChildScrollView(
@@ -86,7 +87,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                           children: [
                             ScaleTransition(
                               scale: _scaleAnimation,
-                              child: _successIllustration(),
+                              child: _successIllustration(context),
                             ),
                             const SizedBox(height: 30),
 
@@ -96,22 +97,22 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE8F2DF),
+                                color: colors.tertiaryContainer,
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     Icons.check_circle_rounded,
-                                    color: Color(0xFF365C37),
+                                    color: colors.onTertiaryContainer,
                                     size: 16,
                                   ),
                                   SizedBox(width: 7),
                                   Text(
                                     'ORDER CONFIRMED',
                                     style: TextStyle(
-                                      color: Color(0xFF365C37),
+                                      color: colors.onTertiaryContainer,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w800,
                                       letterSpacing: 1,
@@ -122,11 +123,11 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                             ),
                             const SizedBox(height: 20),
 
-                            const Text(
+                            Text(
                               'Order placed\nsuccessfully!',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: textPrimary,
+                                color: colors.onSurface,
                                 fontSize: 31,
                                 height: 1.2,
                                 fontWeight: FontWeight.w800,
@@ -135,12 +136,12 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                             ),
                             const SizedBox(height: 15),
 
-                            const Text(
+                            Text(
                               'Thank you for shopping with ShopSphere. '
                               'Your order has been processed successfully.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: textSecondary,
+                                color: colors.onSurfaceVariant,
                                 fontSize: 14,
                                 height: 1.8,
                               ),
@@ -151,20 +152,22 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                               width: double.infinity,
                               padding: const EdgeInsets.all(18),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: colors.surfaceContainerLow,
                                 borderRadius: BorderRadius.circular(22),
                                 border: Border.all(
-                                  color: const Color(0xFFDCE3D8),
+                                  color: colors.outlineVariant,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: primary.withValues(alpha: 0.05),
+                                    color: colors.shadow.withValues(
+                                      alpha: 0.08,
+                                    ),
                                     blurRadius: 20,
                                     offset: const Offset(0, 7),
                                   ),
                                 ],
                               ),
-                              child: const Row(
+                              child: Row(
                                 children: [
                                   _InfoIcon(icon: Icons.verified_user_outlined),
                                   SizedBox(width: 13),
@@ -176,7 +179,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                         Text(
                                           'Thank you for your order',
                                           style: TextStyle(
-                                            color: textPrimary,
+                                            color: colors.onSurface,
                                             fontSize: 14,
                                             fontWeight: FontWeight.w800,
                                           ),
@@ -185,7 +188,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                         Text(
                                           'We hope you love your purchase!',
                                           style: TextStyle(
-                                            color: textSecondary,
+                                            color: colors.onSurfaceVariant,
                                             fontSize: 12,
                                           ),
                                         ),
@@ -194,7 +197,7 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                   ),
                                   Icon(
                                     Icons.favorite_rounded,
-                                    color: Color(0xFF78958A),
+                                    color: colors.tertiary,
                                     size: 22,
                                   ),
                                 ],
@@ -210,8 +213,8 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                                   context.go('/products');
                                 },
                                 style: FilledButton.styleFrom(
-                                  backgroundColor: primary,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: colors.primary,
+                                  foregroundColor: colors.onPrimary,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(17),
@@ -236,10 +239,10 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
                               onPressed: () {
                                 context.go('/products');
                               },
-                              child: const Text(
+                              child: Text(
                                 'Back to Home',
                                 style: TextStyle(
-                                  color: textSecondary,
+                                  color: colors.onSurfaceVariant,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -259,20 +262,22 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
     );
   }
 
-  Widget _successIllustration() {
+  Widget _successIllustration(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       width: 174,
       height: 174,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFE8EDE3), Color(0xFFF0F3EC)],
+          colors: [colors.primaryContainer, colors.surfaceContainerHigh],
         ),
         boxShadow: [
           BoxShadow(
-            color: primary.withValues(alpha: 0.10),
+            color: colors.shadow.withValues(alpha: 0.10),
             blurRadius: 30,
             spreadRadius: 3,
           ),
@@ -283,19 +288,19 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
           width: 118,
           height: 118,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colors.surfaceContainerLow,
             borderRadius: BorderRadius.circular(37),
             boxShadow: [
               BoxShadow(
-                color: primary.withValues(alpha: 0.12),
+                color: colors.shadow.withValues(alpha: 0.12),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
             ],
           ),
-          child: const Icon(
+          child: Icon(
             Icons.check_circle_rounded,
-            color: Color(0xFF365C37),
+            color: colors.primary,
             size: 83,
           ),
         ),
@@ -303,13 +308,15 @@ class _CheckoutSuccessPageState extends State<CheckoutSuccessPage>
     );
   }
 
-  Widget _decorationCircle(double size) {
+  Widget _decorationCircle(BuildContext context, double size) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFFDCE6D8).withValues(alpha: 0.35),
+        color: colors.primaryContainer.withValues(alpha: 0.24),
       ),
     );
   }
@@ -322,14 +329,16 @@ class _InfoIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       width: 46,
       height: 46,
       decoration: BoxDecoration(
-        color: const Color(0xFFE8EDE3),
+        color: colors.surfaceContainer,
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Icon(icon, color: const Color(0xFF294B45), size: 23),
+      child: Icon(icon, color: colors.primary, size: 23),
     );
   }
 }

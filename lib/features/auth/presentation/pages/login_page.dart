@@ -185,16 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildBranding(context, isWide: true),
-                      const SizedBox(height: 28),
-                      Text(
-                        'Thoughtful finds. Effortless shopping.',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: _muted,
-                        ),
-                      ),
-                    ],
+                    children: [_buildBranding(context, isWide: true)],
                   ),
                 ),
               ),
@@ -240,101 +231,72 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildBranding(BuildContext context, {required bool isWide}) {
-    final logoSize = isWide ? 160.0 : 140.0;
+    final logoSize = isWide ? 110.0 : 100.0;
+    final nameSize = isWide ? 26.0 : 24.0;
 
-    return Column(
-      crossAxisAlignment: isWide
-          ? CrossAxisAlignment.start
-          : CrossAxisAlignment.start,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (!isWide)
-          SizedBox(
-            height: 170,
-            child: Stack(
-              children: [
-                Positioned(
-                  right: -10,
-                  top: 0,
-                  bottom: 0,
-                  child: Image.asset(
-                    'assets/images/shopping_sample.png',
-                    width: 220,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: SizedBox(
-                    width: 155,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          'assets/images/logo_bag.png',
-                          width: 125,
-                          height: 125,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 0),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Shop',
-                                style: TextStyle(
-                                  color: _ink,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -1,
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'Sphere',
-                                style: TextStyle(
-                                  color: _purple,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -1,
-                                ),
-                              ),
-                            ],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        else
-          Row(
+        Expanded(
+          flex: 4,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
                 'assets/images/logo_bag.png',
                 width: logoSize,
                 height: logoSize,
                 fit: BoxFit.contain,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Image.asset(
-                  'assets/images/shopping_sample.png',
-                  height: 260,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              const SizedBox(height: 2),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Shop',
+                      style: TextStyle(
+                        color: _ink,
+                        fontSize: nameSize,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Sphere',
+                      style: TextStyle(
+                        color: _purple,
+                        fontSize: nameSize,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Thoughtful finds.\nEffortless shopping.',
+                style: TextStyle(
+                  color: _muted,
+                  fontSize: isWide ? 14 : 13,
+                  height: 1.3,
                 ),
               ),
             ],
           ),
-        if (!isWide) const SizedBox(height: 0),
-        if (!isWide)
-          const Text(
-            'Thoughtful finds. Effortless shopping.',
-            style: TextStyle(color: _muted, fontSize: 13, height: 1.0),
+        ),
+        const SizedBox(width: 0),
+        Expanded(
+          flex: 6,
+          child: Image.asset(
+            'assets/images/shopping_sample.png',
+            height: isWide ? 220 : 160,
+            fit: BoxFit.contain,
+            errorBuilder: (_, _, _) => const SizedBox.shrink(),
           ),
+        ),
       ],
     );
   }
