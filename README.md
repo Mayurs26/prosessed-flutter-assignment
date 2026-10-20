@@ -1,321 +1,494 @@
-# ShopSphere — Flutter E-Commerce App
+<div align="center">
 
-ShopSphere is a Flutter e-commerce app built for the Prosessed Flutter Developer Intern assignment. It uses the required DummyJSON REST API and provides authentication, product discovery, product details, cart management, checkout confirmation, profile access, responsive layouts, light/dark themes, and automated tests.
+# ShopSphere
 
-## Submission links
+### A responsive Flutter shopping experience built with BLoC and Clean Architecture
 
-- **GitHub repository:** [Mayurs26/prosessed-flutter-assignment](https://github.com/Mayurs26/prosessed-flutter-assignment)
-- **Release APK:** [ShopSphere v1.0.0 — GitHub Release](https://github.com/Mayurs26/prosessed-flutter-assignment/releases/tag/v1.0.0)
-- **Demo video and submission files:** [Google Drive folder](https://drive.google.com/drive/folders/19Ampv2zLSNf5DXwCKnHY9D4iiArV4Ar2?usp=sharing)
+A mobile-first shopping catalogue featuring authentication, product discovery, product details, a persistent cart, checkout confirmation, profile management, and a persistent light/dark theme.
 
-## 2. Screenshots
+[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev/)
+[![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart&logoColor=white)](https://dart.dev/)
+[![State Management](https://img.shields.io/badge/State-BLoC-5B4DB7)](https://bloclibrary.dev/)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean%20%2B%20Feature--first-16865A)]()
+[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/Mayurs26/prosessed-flutter-assignment)
 
-### Phone screenshots
+[**Download APK**](https://github.com/Mayurs26/prosessed-flutter-assignment/releases/tag/v1.0.0) ·
+[**Demo & Screenshots**](https://drive.google.com/drive/folders/19Ampv2zLSNf5DXwCKnHY9D4iiArV4Ar2?usp=sharing) ·
+[**Portfolio**](https://mayurportfolio-eight.vercel.app/)
 
-| Splash | Login | Products |
-|---|---|---|
-| ![Splash screen](assets/screenshots/splash_screen.png) | ![Login screen on phone](assets/screenshots/login_phone.png) | ![Products screen on phone](assets/screenshots/products_phone.png) |
+</div>
 
-| Product details | Cart | Profile |
-|---|---|---|
-| ![Product details on phone](assets/screenshots/product_details_phone.png) | ![Cart on phone](assets/screenshots/cart_phone.png) | ![Profile on phone](assets/screenshots/profile_phone.png) |
+---
 
-| Checkout success | Filter |
-|---|---|
-| ![Checkout success](assets/screenshots/checkout_success.png) | ![Filter screen](assets/screenshots/filter.png) |
+## Table of Contents
 
-### Tablet screenshots
+- [Overview](#overview)
+- [Screenshots](#screenshots)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [State Management](#state-management)
+- [Error Handling](#error-handling)
+- [Getting Started](#getting-started)
+- [Testing and Code Quality](#testing-and-code-quality)
+- [Test Credentials](#test-credentials)
+- [Assumptions and Trade-offs](#assumptions-and-trade-offs)
+- [AI Tool Disclosure](#ai-tool-disclosure)
+- [Author](#author)
 
-| Login — tablet | Products — tablet |
-|---|---|
-| ![Login on tablet](assets/screenshots/login_tablet.png) | ![Products on tablet](assets/screenshots/products_tablet.png) |
+## Overview
 
-| Cart — tablet | Profile — tablet |
-|---|---|
-| ![Cart on tablet](assets/screenshots/cart_tablet.png) | ![Profile on tablet](assets/screenshots/profile_tablet.png) |
+ShopSphere is a Flutter shopping-catalogue application created for the Prosessed Flutter assignment. It uses the [DummyJSON API](https://dummyjson.com/) for authentication and product data, with a feature-first Clean Architecture structure to keep presentation, domain, and data responsibilities separated.
 
-| Category filter — tablet |
-|---|
-| ![Category filter on tablet](assets/screenshots/category_filter_tablet.png) |
+The app is designed for phone and tablet layouts. It includes authentication and session restoration, product search and discovery, cart management with local persistence, checkout confirmation, profile access, recoverable network errors, and a persistent light/dark theme.
 
-## 3. Features
+**Release:** [ShopSphere v1.0.0 APK](https://github.com/Mayurs26/prosessed-flutter-assignment/releases/tag/v1.0.0)
+
+## Screenshots
+
+Screenshots are grouped by device size to make the app easier to review. All paths below are relative to the repository root.
+
+### Phone
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <strong>Splash</strong><br>
+      <img src="assets/screenshots/splash_screen.png" alt="ShopSphere splash screen" width="220">
+    </td>
+    <td align="center" width="33%">
+      <strong>Login</strong><br>
+      <img src="assets/screenshots/login_phone.png" alt="ShopSphere login screen on phone" width="220">
+    </td>
+    <td align="center" width="33%">
+      <strong>Product Listing</strong><br>
+      <img src="assets/screenshots/products_phone.png" alt="ShopSphere product listing on phone" width="220">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>Product Details</strong><br>
+      <img src="assets/screenshots/product_details_phone.png" alt="ShopSphere product details on phone" width="220">
+    </td>
+    <td align="center">
+      <strong>Cart</strong><br>
+      <img src="assets/screenshots/cart_phone.png" alt="ShopSphere cart on phone" width="220">
+    </td>
+    <td align="center">
+      <strong>Profile</strong><br>
+      <img src="assets/screenshots/profile_phone.png" alt="ShopSphere profile on phone" width="220">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>Filtering</strong><br>
+      <img src="assets/screenshots/filter_phone.png" alt="ShopSphere product filtering on phone" width="220">
+    </td>
+    <td align="center">
+      <strong>Checkout Success</strong><br>
+      <img src="assets/screenshots/checkout_success.png" alt="ShopSphere checkout success screen" width="220">
+    </td>
+    <td align="center">
+      <strong>Empty Cart</strong><br>
+      <img src="assets/screenshots/Empty_Cart_Phone.png" alt="ShopSphere empty cart state on phone" width="220">
+    </td>
+  </tr>
+</table>
+
+#### Dark Theme
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <strong>Products</strong><br>
+      <img src="assets/screenshots/Dark_Theme_Product_Phone.png" alt="ShopSphere product screen in dark theme" width="220">
+    </td>
+    <td align="center" width="33%">
+      <strong>Profile</strong><br>
+      <img src="assets/screenshots/Dark_Theme_Profile_Phone.png" alt="ShopSphere profile in dark theme" width="220">
+    </td>
+    <td align="center" width="33%">
+      <strong>Profile Details</strong><br>
+      <img src="assets/screenshots/Dark_Theme_Profile_Details_Phone.png" alt="ShopSphere profile details in dark theme" width="220">
+    </td>
+  </tr>
+</table>
+
+### Tablet
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <strong>Login</strong><br>
+      <img src="assets/screenshots/login_tablet.png" alt="ShopSphere login layout on tablet" width="300">
+    </td>
+    <td align="center" width="33%">
+      <strong>Product Listing</strong><br>
+      <img src="assets/screenshots/products_tablet.png" alt="ShopSphere product listing on tablet" width="300">
+    </td>
+    <td align="center" width="33%">
+      <strong>Cart</strong><br>
+      <img src="assets/screenshots/cart_tablet.png" alt="ShopSphere cart layout on tablet" width="300">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <strong>Profile</strong><br>
+      <img src="assets/screenshots/profile_tablet.png" alt="ShopSphere profile layout on tablet" width="300">
+    </td>
+  </tr>
+</table>
+
+## Features
 
 ### Must-have requirements
 
-- [x] Splash and login screens.
-- [x] Product listing and product details screens.
-- [x] Search and category-filtering UI.
-- [x] Cart and checkout-success screens.
-- [x] Profile screen.
-- [x] Phone and tablet layouts represented in screenshots.
-- [ ] Final manual verification of splash session routing and secure access/refresh-token storage.
-- [ ] Final manual verification of invalid-credentials feedback and logout/session clearing.
-- [ ] Final manual verification of pagination, pull-to-refresh, API-loaded categories, debounced search, sorting, loading and empty states.
-- [ ] Final manual verification of product details, quantity selection, out-of-stock handling and the `/products/9999` error state.
-- [ ] Final manual verification of cart updates, totals, local persistence and cart badge.
-- [ ] Final manual verification that checkout calls `POST /carts/add`, shows confirmation and clears the cart only after success.
-- [ ] Final manual verification of profile data from `GET /auth/me` and expired-session handling.
-- [ ] Final manual verification of friendly, recoverable network error states.
+- [x] Splash screen with session restoration and login/home routing.
+- [x] Login form validation, authentication feedback, and logout/session clearing.
+- [x] Product listing with API-loaded categories, search, category filtering, sorting, pagination, pull-to-refresh, loading, and empty states.
+- [x] Product details, quantity selection, and product error handling.
+- [x] Cart item updates, quantity controls, totals, cart badge, and local cart persistence.
+- [x] Checkout request using DummyJSON's `POST /carts/add`, success confirmation, and cart clearing after successful checkout.
+- [x] Profile information loaded from the authenticated-user endpoint and expired-session handling.
+- [x] User-friendly network and error states; airplane mode was used to check network-failure behaviour.
+- [x] Responsive phone and tablet layouts, represented in the screenshots above.
 
 ### Bonus requirements
 
 - [x] Persistent light/dark theme toggle.
-- [x] GitHub Actions CI workflow.
-- [ ] Verify automatic access-token refresh and retry.
-- [ ] Verify locally persisted wishlist/favourites.
-- [ ] Verify offline product cache and offline banner.
-- [ ] Verify widget or golden tests.
-- [ ] Verify English/Hindi localization.
-- [ ] Verify Hero animation between product thumbnail and details image.
+- [x] GitHub Actions workflow for automated analysis and tests.
+- [x] Unit and widget tests covering core utilities, repositories, BLoC state transitions, and app behaviour.
+- [x] Automatic access-token refresh and retry flow.
+- [x] Airplane-mode testing for network-failure behaviour.
 
-Mark requirements complete only after confirming their behaviour in the final build. List any incomplete mandatory requirement before submission.
+### Not implemented
 
-## 4. Tech stack
+- [ ] Locally persisted wishlist/favourites.
+- [ ] Offline product cache and a dedicated “You are offline” banner.
+- [ ] English/Hindi localization.
+- [ ] Hero animation between a product thumbnail and its details image.
 
-### SDK versions
+> **Offline behaviour:** Airplane mode was used to verify network-error handling. Product caching for offline browsing and a dedicated offline banner are not implemented.
 
-Run `flutter --version` to record the exact Flutter and Dart versions used for final verification.
+## Tech Stack
 
-### Packages and purpose
-
-| Package / technology | Purpose |
+| Technology / package | Purpose |
 |---|---|
-| Flutter / Dart | UI and application logic. |
-| `flutter_bloc` | BLoC/Cubit state management and explicit state transitions. |
-| `equatable` | Value equality for states and events. |
-| `dio` | HTTP requests and network error handling. |
-| `get_it` | Dependency injection. |
-| `go_router` | Declarative navigation and routing. |
-| `flutter_secure_storage` | Secure authentication-token storage. |
-| `shared_preferences` | Lightweight local preferences, including theme persistence. |
-| `cached_network_image` | Network image caching and loading support. |
+| Flutter / Dart | Cross-platform UI and application code. |
+| Material 3 | Consistent Material design components and theming. |
+| `flutter_bloc` | Event-driven state management using BLoCs and states. |
+| `equatable` | Value equality for events, states, and domain objects where used. |
+| `dio` | HTTP requests to DummyJSON and network configuration. |
+| `get_it` | Dependency registration and service resolution. |
+| `go_router` | Declarative app routing and navigation. |
+| `flutter_secure_storage` | Secure storage for authentication tokens. |
+| `shared_preferences` | Local preferences, including the persistent theme choice; the cart local data source also uses local persistence. |
+| `cached_network_image` | Network image loading and caching support in the UI. |
 | `shimmer` | Loading placeholders. |
 | `intl` | Formatting utilities. |
-| `bloc_test` | BLoC/Cubit state-transition tests. |
-| `mocktail` | Mocking dependencies in tests. |
-| DummyJSON | Required public REST API. |
+| `stream_transform` | Stream transformation utilities. |
+| `bloc_test` | Testing BLoC event-to-state behaviour. |
+| `mocktail` | Mocking and stubbing dependencies in tests. |
+| `flutter_test` | Flutter unit and widget testing. |
+| GitHub Actions | Continuous integration for analysis and tests. |
 
-Confirm package names and versions against `pubspec.yaml`.
+The Dart SDK constraint declared in `pubspec.yaml` is `^3.13.5`. The app version is `1.0.0+1`.
 
-## 5. Architecture
+## Architecture
 
-ShopSphere uses a feature-first structure with presentation, domain and data layers.
+ShopSphere uses **feature-first Clean Architecture**. Features are separated into `presentation`, `domain`, and `data` layers, while shared infrastructure lives in `core/`.
+
+### Layer diagram
+
+![ShopSphere architecture layer diagram](assets/Diagrams/ShopSphere_Layer_Diagram.png)
+
+### Folder structure
 
 ```text
 lib/
+├── app.dart
+├── main.dart
 ├── core/
 │   ├── di/
+│   │   └── injection.dart
 │   ├── error/
+│   │   ├── exception_mapper.dart
+│   │   └── failure.dart
 │   ├── network/
+│   │   ├── api_endpoints.dart
+│   │   ├── auth_interceptor.dart
+│   │   └── dio_client.dart
 │   ├── routing/
+│   │   ├── app_router.dart
+│   │   └── main_navigation_shell.dart
 │   ├── storage/
-│   └── theme/
-├── features/
-│   ├── auth/
-│   │   ├── data/
-│   │   ├── domain/
-│   │   └── presentation/
-│   ├── products/
-│   │   ├── data/
-│   │   ├── domain/
-│   │   └── presentation/
-│   └── cart/
-│       ├── data/
-│       ├── domain/
-│       └── presentation/
-├── app.dart
-└── main.dart
-
-test/
-├── core/
-├── features/
-└── widget_test.dart
+│   │   └── token_storage.dart
+│   ├── theme/
+│   │   ├── app_theme.dart
+│   │   └── theme_controller.dart
+│   └── utils/
+└── features/
+    ├── auth/
+    │   ├── data/
+    │   │   ├── datasources/
+    │   │   │   └── auth_remote_data_source.dart
+    │   │   ├── models/
+    │   │   │   └── login_response_model.dart
+    │   │   └── repositories/
+    │   │       └── auth_repository_impl.dart
+    │   ├── domain/
+    │   │   ├── entities/
+    │   │   │   └── auth_session.dart
+    │   │   ├── repositories/
+    │   │   │   └── auth_repository.dart
+    │   │   └── usecases/
+    │   │       ├── get_current_user_use_case.dart
+    │   │       ├── login_use_case.dart
+    │   │       └── logout_use_case.dart
+    │   └── presentation/
+    │       ├── bloc/
+    │       │   ├── auth_bloc.dart
+    │       │   ├── auth_event.dart
+    │       │   └── auth_state.dart
+    │       └── pages/
+    │           ├── login_page.dart
+    │           ├── profile_page.dart
+    │           └── splash_page.dart
+    ├── cart/
+    │   ├── data/
+    │   │   ├── datasources/
+    │   │   │   ├── cart_local_data_source.dart
+    │   │   │   └── cart_remote_data_source.dart
+    │   │   ├── models/
+    │   │   └── repositories/
+    │   │       └── cart_repository_impl.dart
+    │   ├── domain/
+    │   │   ├── entities/
+    │   │   │   └── cart_item.dart
+    │   │   ├── repositories/
+    │   │   │   └── cart_repository.dart
+    │   │   └── usecases/
+    │   │       └── checkout_use_case.dart
+    │   └── presentation/
+    │       ├── bloc/
+    │       │   ├── cart_bloc.dart
+    │       │   ├── cart_event.dart
+    │       │   ├── cart_state.dart
+    │       │   ├── checkout_bloc.dart
+    │       │   ├── checkout_event.dart
+    │       │   └── checkout_state.dart
+    │       ├── cubit/
+    │       └── pages/
+    │           ├── cart_page.dart
+    │           └── checkout_success_page.dart
+    ├── checkout/
+    │   ├── data/
+    │   │   ├── datasources/
+    │   │   └── repositories/
+    │   ├── domain/
+    │   │   ├── repositories/
+    │   │   └── usecases/
+    │   └── presentation/
+    │       ├── bloc/
+    │       └── pages/
+    └── products/
+        ├── data/
+        │   ├── datasources/
+        │   │   └── product_remote_data_source.dart
+        │   ├── models/
+        │   │   ├── product_category_model.dart
+        │   │   └── product_model.dart
+        │   └── repositories/
+        │       └── product_repository_impl.dart
+        ├── domain/
+        │   ├── entities/
+        │   │   ├── product.dart
+        │   │   ├── product_category.dart
+        │   │   └── product_review.dart
+        │   ├── repositories/
+        │   │   └── product_repository.dart
+        │   └── usecases/
+        │       ├── get_products_by_category_use_case.dart
+        │       ├── get_products_use_case.dart
+        │       ├── get_product_by_id_use_case.dart
+        │       ├── get_product_categories_use_case.dart
+        │       └── search_products_use_case.dart
+        └── presentation/
+            ├── bloc/
+            │   ├── product_bloc.dart
+            │   ├── product_event.dart
+            │   └── product_state.dart
+            └── pages/
+                ├── product_details_page.dart
+                └── product_listing_page.dart
 ```
 
 ### Layer responsibilities
 
-- **Presentation:** Screens, UI components and BLoC/Cubit state handling.
-- **Domain:** Entities, repository contracts and use cases where implemented.
-- **Data:** API/local data sources, models and repository implementations.
-- **Core:** Shared networking, dependency injection, routing, storage, theme and error handling.
+- **Presentation:** Pages and widgets display the UI. BLoCs receive events and emit states.
+- **Domain:** Entities, repository contracts, and use cases define core application rules and abstractions.
+- **Data:** Data sources communicate with remote APIs or local storage. Models parse external data, and repository implementations fulfil domain contracts.
+- **Core:** Shared dependency injection, Dio configuration and interceptors, routing, secure token storage, theme configuration, and error mapping.
 
-### Example request flow: loading products
+### Data flow: one request (UI → API → UI)
 
-```text
-Products screen
-    ↓ user action / BLoC event
-Products BLoC or Cubit
-    ↓
-Get-products use case (where used)
-    ↓
-Repository contract
-    ↓
-Repository implementation / remote data source
-    ↓
-Dio client → DummyJSON API
-    ↓
-JSON response → model → repository result
-    ↓
-BLoC/Cubit emits success, empty or failure state
-    ↓
-UI displays products or a recoverable state
-```
+Example: loading the product list.
 
-## 6. State management
+![ShopSphere product data flow](assets/Diagrams/ShopSphere_Product_Data_Flow.png)
 
-ShopSphere uses **`flutter_bloc` (BLoC/Cubit)** for state management. It makes loading, success, empty and failure transitions explicit and testable, and keeps asynchronous business logic out of widgets. The trade-off is additional classes and boilerplate compared with simpler local state.
+1. The product listing page triggers a product-loading event.
+2. `ProductBloc` emits a loading state and invokes the relevant use case.
+3. The use case calls the domain repository contract.
+4. The repository implementation requests data from the remote data source.
+5. The data source uses Dio to call the DummyJSON products endpoint.
+6. The response is parsed into data models and mapped to domain entities.
+7. The result returns through the use case to `ProductBloc`.
+8. The BLoC emits a success or failure state, and the UI rebuilds to show the products or a recoverable error message.
 
-## 7. Error handling
+## State Management
 
-ShopSphere uses the required DummyJSON API: <https://dummyjson.com>.
+ShopSphere uses **BLoC (Business Logic Component)** through `flutter_bloc`.
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `POST` | `/auth/login` | Sign in and receive tokens/user data. |
-| `GET` | `/auth/me` | Retrieve the signed-in user. |
-| `POST` | `/auth/refresh` | Request refreshed credentials. |
-| `GET` | `/products?limit=20&skip=0` | Paginated product list. |
-| `GET` | `/products/search?q=phone` | Search products. |
-| `GET` | `/products/categories` | Retrieve categories. |
-| `GET` | `/products/category/{slug}` | Retrieve products in a category. |
-| `GET` | `/products/{id}` | Retrieve product details. |
-| `POST` | `/carts/add` | Simulate cart/order creation. |
+- UI interactions are represented as events.
+- BLoCs process events and emit states such as loading, success, and failure.
+- Widgets react to state changes rather than owning the feature's business logic.
+- Authentication, products, cart, and checkout have dedicated BLoC event/state files.
+- `bloc_test` and `mocktail` are used to test state transitions and isolate dependencies.
 
-The app should surface user-friendly errors rather than raw exceptions. Confirm each scenario in the running app before describing its behaviour as verified.
+This approach keeps UI rendering separate from application behaviour and makes key flows easier to test.
 
-| Scenario | How to test | Expected behaviour |
-|---|---|---|
-| Server error | Request `GET /http/500` if supported by the app's test setup. | Friendly error and retry; no crash or raw stack trace. |
-| Missing product | Request `GET /products/9999`. | “Product not found” state and a way back. |
-| Slow network | Request `GET /products?delay=3000` if supported by the app's test setup. | Loader remains visible and timeout/error is handled. |
-| Invalid login | Submit an incorrect password. | Inline invalid-credentials message. |
-| Invalid/expired session | Call `/auth/me` with invalid/expired credentials. | Refresh/retry if implemented; otherwise sign out with a message. |
-| Invalid refresh token | Request `POST /auth/refresh` with an invalid token. | Sign out and explain that the session expired. |
-| No internet | Enable airplane mode. | Offline/error message and retry; cached content only if implemented. |
+## Error Handling
 
-## 8. Getting started
+Network and application errors are mapped into user-facing failure states rather than being treated as successful responses.
+
+- Dio/network exceptions are handled by the data/repository and error-mapping flow.
+- Feature BLoCs emit failure states when operations fail.
+- The UI can show recoverable feedback for invalid credentials, expired sessions, missing products, and network failures.
+- Airplane-mode testing was used to check the network-error path.
+
+## Getting Started
 
 ### Prerequisites
 
-- Flutter SDK and the bundled Dart SDK.
+- Flutter SDK compatible with the Dart constraint in `pubspec.yaml` (`^3.13.5`).
+- Android Studio or VS Code with Flutter and Dart tooling.
+- An Android emulator or physical Android device.
 - Git.
-- Android Studio or VS Code with Flutter tooling.
-- Android emulator or Android device.
 
-### 1. Clone the repository
+Check the installed tools:
+
+```bash
+flutter --version
+dart --version
+flutter doctor
+```
+
+### Clone the repository
 
 ```bash
 git clone https://github.com/Mayurs26/prosessed-flutter-assignment.git
 cd prosessed-flutter-assignment
 ```
 
-### 2. Install dependencies
+### Install dependencies
 
 ```bash
 flutter pub get
 ```
 
-### 3. Check the environment and devices
-
-```bash
-flutter doctor
-flutter --version
-flutter devices
-```
-
-### 4. Run the app
+### Run the app
 
 ```bash
 flutter run
 ```
 
-To select a particular device:
-
-```bash
-flutter run -d <device_id>
-```
-
-### 5. Analyze and format
+### Run static analysis
 
 ```bash
 flutter analyze
-dart format --output=none --set-exit-if-changed lib test
 ```
 
-### 6. Build the release APK
+### Run tests
 
 ```bash
-flutter build apk --release
+flutter test
 ```
 
-The default output is:
-
-```text
-build/app/outputs/flutter-apk/app-release.apk
-```
-
-The submission APK is named:
-
-```text
-ShopSphere_Mayur_Sonawane_v1.0.0.apk
-```
-
-Install and smoke-test the release APK on Android 8.0 (API 26) or newer. The APK is attached to the GitHub Release tagged `v1.0.0`.
-
-## 9. Testing
-
-Run the full test suite:
-
-```bash
-flutter test --reporter expanded
-```
-
-Generate coverage data:
+### Run tests with coverage
 
 ```bash
 flutter test --coverage
 ```
 
-Coverage output is written to `coverage/lcov.info`. Record the test count and coverage percentage from the final run; earlier results should not be treated as proof of the current build.
+The coverage command writes `coverage/lcov.info`. To calculate a percentage, use an LCOV-compatible report tool or your IDE's coverage viewer; do not infer a coverage percentage from the test count alone.
 
-- **Previously recorded test result:** 147 tests passed. Re-run after final code changes to confirm.
-- **Current line coverage:** Recalculate using the latest `flutter test --coverage` output.
-- **Test scope:** Tests are organised across core error/network/storage handling and auth, cart and product features. Confirm the final count and coverage after running the suite.
+### Build a release APK
 
-## 10. Test credentials
-
-Use the credentials specified by the assignment:
-
-```text
-Username: emilys
-Password: emilyspass
+```bash
+flutter build apk --release
 ```
 
-DummyJSON simulates cart/order write operations; responses do not represent a real-world order saved on the server. The app must persist its own cart locally.
+Default output:
 
-## 11. Assumptions & trade-offs
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
 
-- **Backend:** DummyJSON is the required API; no custom backend is part of this assignment.
-- **Simulated checkout:** `POST /carts/add` returns a simulated response and does not place a real merchant order.
-- **State management:** BLoC/Cubit provides explicit state transitions and testability, with additional boilerplate.
-- **Local persistence:** Verify cart persistence across app restarts before submission.
-- **Scope honesty:** Clearly list any incomplete mandatory requirements and how they would be addressed with more time.
-- **Future improvements:** Add integration tests for full user journeys, improve measured coverage, and verify accessibility/font scaling and phone/tablet layouts in portrait and landscape.
+The published assignment APK is available from the [GitHub v1.0.0 release](https://github.com/Mayurs26/prosessed-flutter-assignment/releases/tag/v1.0.0). You can also access the [Drive folder](https://drive.google.com/drive/folders/19Ampv2zLSNf5DXwCKnHY9D4iiArV4Ar2?usp=sharing).
 
-### AI tool disclosure
+## Testing and Code Quality
 
-ChatGPT was used as an assistant during development for guidance and documentation support. The implementation and submitted code are the author's responsibility to understand and verify.
+The test suite includes unit and widget tests for authentication, product repositories, product BLoC behaviour, error handling, and app launch behaviour.
 
-## 12. Author
+**Latest provided verification output:**
 
-**Mayur Sonawane**  
-Flutter Developer | MCA Graduate
+| Check | Result |
+|---|---|
+| `flutter test` | **147 tests passed** |
+| `flutter test --coverage` | **147 tests passed** |
+| `flutter analyze` | **No issues found** |
 
-- **Email:** [mayurr.2609@gmail.com](mailto:mayurr.2609@gmail.com)
-- **LinkedIn:** [mayur-sonawane](https://www.linkedin.com/in/mayur-sonawane-)
-- **GitHub:** [Mayurs26](https://github.com/Mayurs26)
-- **Portfolio:** [mayurportfolio-eight.vercel.app](https://mayurportfolio-eight.vercel.app)
+The analysis result above was reported from the local project terminal. Run the commands again after making changes to verify the current checkout.
+
+GitHub Actions is configured to automate analysis and test checks. See the repository's workflow files under `.github/workflows/`.
+
+## Test Credentials
+
+DummyJSON provides sample authentication accounts. One commonly documented sample account is:
+
+- **Username:** `emilys`
+- **Password:** `emilyspass`
+
+These are public API sample credentials, not private application credentials. If the API changes or these credentials stop working, consult the [DummyJSON authentication documentation](https://dummyjson.com/docs/auth).
+
+## Assumptions and Trade-offs
+
+- **API:** DummyJSON is used as a demonstration API. Its cart endpoint simulates checkout behaviour; it does not represent a real payment or fulfilment system.
+- **Authentication:** Access and refresh tokens are stored using secure storage. Token refresh and retry are implemented in the network/authentication flow.
+- **Cart persistence:** Cart state is persisted locally for continuity between app sessions.
+- **Offline behaviour:** Network failure feedback is supported and was checked with airplane mode. Offline product-list caching and a dedicated offline banner are not implemented.
+- **Scope:** Wishlist persistence, localization, and the product-image Hero animation are not implemented.
+- **Architecture:** Feature-first Clean Architecture adds separation and testability, at the cost of more files and abstractions than a small single-screen app.
+
+## AI Tool Disclosure
+
+**ChatGPT was used as a development assistant.** I made the product decisions, defined the application logic and requirements, and created the UI direction and visual design. I also used ChatGPT to help generate and refine some code, improve code structure and formatting, explain errors, and assist with documentation and testing workflows. I reviewed and integrated the suggestions into the project and ran the reported analysis and test commands.
+
+The final implementation reflects my design choices and project decisions, with AI assistance used as a supporting development tool.
+
+## Author
+
+**Mayur Sonawane**
+
+- Email: [mayurr.2609@gmail.com](mailto:mayurr.2609@gmail.com)
+- LinkedIn: [mayur-sonawane](https://www.linkedin.com/in/mayur-sonawane-)
+- GitHub: [Mayurs26](https://github.com/Mayurs26)
+- Portfolio: [mayurportfolio-eight.vercel.app](https://mayurportfolio-eight.vercel.app/)
 
 ---
 
-Built with Flutter for the Prosessed Flutter Developer Intern assignment.
+<div align="center">
+
+Built with Flutter, BLoC, and care for clean architecture.
+
+</div>
